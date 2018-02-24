@@ -10,9 +10,6 @@ matrix:
     - os: linux
       language: python
       python: 3.5
-    - os: linux
-      language: python
-      python: 3.4
 
 env:
   global:
