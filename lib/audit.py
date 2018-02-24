@@ -20,9 +20,9 @@ import os
 import sys
 import glob
 import hashlib
-import requests
 import argparse
 from subprocess import Popen, PIPE
+import requests
 
 
 BASEAPIURL = "https://api.pwnedpasswords.com/"
@@ -124,7 +124,7 @@ class PasswordStore():
         return stdout
 
     def list(self, path=''):
-        """ Return a list of paths in a store """
+        """Return a list of paths in a store."""
         paths = []
         prefix = os.path.join(self.prefix, path)
         for file in glob.glob(prefix + '*/**/*.gpg', recursive=True):
@@ -172,9 +172,9 @@ class PassAudit():
         data = []
         prefixes = []
         for path, password in self.data.items():
-            hash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()
-            prefix = hash[0:5]
-            data.append((path, password, hash, prefix))
+            phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()
+            prefix = phash[0:5]
+            data.append((path, password, phash, prefix))
             if prefix not in prefixes:
                 prefixes.append(prefix)
 
@@ -185,9 +185,9 @@ class PassAudit():
 
         # Compare the data and return the breached passwords.
         breached = []
-        for path, password, hash, prefix in data:
-            if hash in buckets[prefix][0]:
-                index = buckets[prefix][0].index(hash)
+        for path, password, phash, prefix in data:
+            if phash in buckets[prefix][0]:
+                index = buckets[prefix][0].index(phash)
                 count = buckets[prefix][1][index]
                 breached.append((path, password, count))
         return breached
