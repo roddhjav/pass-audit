@@ -4,14 +4,16 @@
         <img src="https://img.shields.io/travis/roddhjav/pass-audit/master.svg"
             alt="Build Status"></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
-        <img src="https://img.shields.io/codacy/coverage//master.svg"
+        <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg"
 	          alt="Code Coverage" /></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
-        <img src="https://img.shields.io/codacy/grade//master.svg"
+        <img src="https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg"
             alt="Code Quality"></a>
 </p>
 <p align="center">
+
   A [pass][pass] extension for auditing your password repository.
+
 </p>
 
 ## Description
@@ -19,7 +21,7 @@
 It supports safe breached password detection from [haveibeenpwned.com][HIBP]
 using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 (fully) trust the server that stores the breached password. You should read the
-[security consideration](#security_consideration) section for more information.
+[security consideration](#security-consideration) section for more information.
 
 **Warning** This extension is still in development. As of today, it only
 supports password breach detection from HIBP. Must more features are planned
