@@ -1,0 +1,6 @@
+[paths]
+source = ../lib/audit.py
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
