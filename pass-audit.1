@@ -1,0 +1,68 @@
+.TH MARK 1 "February 2018" "pass-audit"
+
+.SH NAME
+\fBpass audit\fP - A \fIpass\fP(1) extension for auditing your password repository.
+
+
+.SH SYNOPSIS
+\fBpass audit\fP [-h] [-V] paths
+
+.SH DESCRIPTION
+\fBpass audit\fP is a password store extension for auditing your password
+repository. It supports safe breached password detection from haveibeenpwned.com
+using K-anonymity method.
+
+
+.SH COMMAND
+.TP
+\fBpass audit\fP \fIPath\fP
+
+
+.SH OPTIONS
+
+.TP
+\fB\-q\fB, \-\-quiet\fR
+Be quiet.
+
+.TP
+\fB\-v\fB, \-\-verbose\fR
+Be verbose.
+
+.TP
+\fB\-V\fB, \-\-version\fR
+Show the program version and exit.
+
+.TP
+\fB\-h\fB, \-\-help\fR
+Show usage message.
+
+
+.SH SEE ALSO
+.BR pass(1),
+.BR pass-tomb(1),
+.BR pass-import(1),
+.BR pass-update(1),
+.BR pass-otp(1)
+
+
+.SH AUTHORS
+.B pass import
+was written by
+.MT alexandre@pujol.io
+Alexandre Pujol
+.ME .
+
+
+.SH COPYING
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
