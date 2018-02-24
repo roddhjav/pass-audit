@@ -18,7 +18,7 @@ if test_have_prereq TRAVIS; then
     export PASSWORD_STORE_EXTENSIONS_DIR=''
     test_expect_success 'Testing extension installation' '
         make --directory=$EXT_HOME install &&
-        _pass import --version | grep "pass audit 1.0" &&
+        _pass audit --version | grep "pass audit 1.0" &&
         make --directory=$EXT_HOME uninstall
         '
 fi
