@@ -40,22 +40,22 @@ class TestPassStore(setup.TestPass):
         self.assertEqual(self.store.env['PASSWORD_STORE_BIN'], os.environ['PASSWORD_STORE_BIN'])
         self.assertEqual(self.store.env['GNUPGHOME'], os.environ['GNUPGHOME'])
 
-    def test_list(self):
-        """Testing: pass list."""
-        ref = ['Social/news.ycombinator.com', 'Social/mastodon.social',
-               'Social/twitter.com', 'CornerCases/note', 'CornerCases/empty password',
-               'CornerCases/space title', 'CornerCases/empty entry', 'Bank/aib',
-               'Servers/ovh.com', 'Servers/ovh.com0', 'Emails/dpbx@klivak.xb',
-               'Emails/dpbx@afoqwdr.tx', 'Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
-        self.assertEqual(self.store.list(), ref)
-
-    def test_list_root(self):
-        """ Testing: pass list path/ """
-        ref = ['Emails/dpbx@klivak.xb', 'Emails/dpbx@afoqwdr.tx',
-               'Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
-        self.assertEqual(self.store.list('Emails'), ref)
-        ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
-        self.assertEqual(self.store.list('Emails/WS'), ref)
+    # def test_list(self):
+    #     """Testing: pass list."""
+    #     ref = ['Social/news.ycombinator.com', 'Social/mastodon.social',
+    #            'Social/twitter.com', 'CornerCases/note', 'CornerCases/empty password',
+    #            'CornerCases/space title', 'CornerCases/empty entry', 'Bank/aib',
+    #            'Servers/ovh.com', 'Servers/ovh.com0', 'Emails/dpbx@klivak.xb',
+    #            'Emails/dpbx@afoqwdr.tx', 'Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
+    #     self.assertEqual(self.store.list(), ref)
+    #
+    # def test_list_root(self):
+    #     """ Testing: pass list path/ """
+    #     ref = ['Emails/dpbx@klivak.xb', 'Emails/dpbx@afoqwdr.tx',
+    #            'Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
+    #     self.assertEqual(self.store.list('Emails'), ref)
+    #     ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
+    #     self.assertEqual(self.store.list('Emails/WS'), ref)
 
     def test_show(self):  # Test empty entry, empty pass...
         """ Testing: pass show password """
