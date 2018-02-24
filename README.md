@@ -11,9 +11,8 @@
             alt="Code Quality"></a>
 </p>
 <p align="center">
-
-  A [pass][pass] extension for auditing your password repository.
-
+A <a href="https://www.passwordstore.org/">pass</a> extension for auditing your
+password repository.
 </p>
 
 ## Description
