@@ -33,7 +33,7 @@ including but not limited to:
 ## Usage
 
 ```
-usage: pass audit [-h] [-V] paths
+usage: pass audit [-h] [-V] [paths]
 
   A pass extension for auditing your password repository. It supports safe
   breached password detection from haveibeenpwned.com using K-anonymity method.
