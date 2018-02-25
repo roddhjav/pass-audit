@@ -125,13 +125,16 @@ class PasswordStore():
 
     def list(self, path=''):
         """Return a list of paths in a store."""
-        paths = []
         prefix = os.path.join(self.prefix, path)
-        for file in glob.glob(prefix + '*/**/*.gpg', recursive=True):
-            if not file[0] == '.':
-                file = os.path.splitext(file)[0]
-                file = file[len(self.prefix)+1:]
-                paths.append(file)
+        if os.path.isfile(prefix + '.gpg'):
+            paths = [path]
+        else:
+            paths = []
+            for file in glob.glob(prefix + '*/**/*.gpg', recursive=True):
+                if not file[0] == '.':
+                    file = os.path.splitext(file)[0]
+                    file = file[len(self.prefix)+1:]
+                    paths.append(file)
         return paths
 
     def show(self, path):

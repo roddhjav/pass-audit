@@ -40,6 +40,12 @@ class TestPassStore(setup.TestPass):
         self.assertEqual(self.store.env['PASSWORD_STORE_BIN'], os.environ['PASSWORD_STORE_BIN'])
         self.assertEqual(self.store.env['GNUPGHOME'], os.environ['GNUPGHOME'])
 
+    def test_list_path(self):
+        """Testing: pass list exact path."""
+        path = 'Social/mastodon.social'
+        ref = ['Social/mastodon.social']
+        self.assertEqual(self.store.list(path), ref)
+
     # def test_list(self):
     #     """Testing: pass list."""
     #     ref = ['Social/news.ycombinator.com', 'Social/mastodon.social',
@@ -58,7 +64,7 @@ class TestPassStore(setup.TestPass):
     #     self.assertEqual(self.store.list('Emails/WS'), ref)
 
     def test_show(self):  # Test empty entry, empty pass...
-        """ Testing: pass show password """
+        """Testing: pass show password."""
         path = "Social/mastodon.social"
         password = "D<INNeT?#?Bf4%`zA/4i!/'$T"
         self.assertEqual(self.store.show(path), password)
