@@ -201,12 +201,13 @@ def main(argv):
     parser = argparse.ArgumentParser(prog='pass audit', description="""
   A pass extension for auditing your password repository. It supports safe
   breached password detection from haveibeenpwned.com using K-anonymity method.""",
-    usage="%(prog)s [-h] [-V] paths",
+    usage="%(prog)s [-h] [-V] pass-names",
     formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog="More information may be found in the pass-audit(1) man page.")
 
-    parser.add_argument('paths', type=str, nargs='?',
-                        help="""Path to audit in the password store.""")
+    parser.add_argument('paths', type=str, nargs='?', metavar='pass-names',
+                        default='', help="""Path(s) to audit in the password
+                        store, If empty audit the full store.""")
     parser.add_argument('-q', '--quiet', action='store_true', help='Be quiet.')
     parser.add_argument('-v', '--verbose', action='store_true', help='Be verbose.')
     parser.add_argument('-V', '--version', action='version',
@@ -224,16 +225,18 @@ def main(argv):
     QUIET = arg.quiet
 
     # Sanity checks
-    if arg.paths is None:
-        arg.paths = ""
+    if arg.paths == '':
         message("Auditing whole store - this may take some time")
     store = PasswordStore()
     if not store.exist():
         die("no password store to audit.")
+    paths = store.list(arg.paths)
+    if len(paths) == 0:
+        die("%s is not in the password store." % arg.paths)
 
     # Read data from the password store.
     data = dict()
-    for path in store.list(arg.paths):
+    for path in paths:
         try:
             data[path] = store.show(path)
         except PasswordStoreError as e:
