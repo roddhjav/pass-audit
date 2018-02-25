@@ -41,11 +41,6 @@ class TestPassAuditCMD(setup.TestPass):
         cmd = ['--version']
         self._passaudit(cmd, 0)
 
-    def test_pass_audit_PathsNotPresent(self):
-        """Testing: empty paths."""
-        cmd = []
-        self._passaudit(cmd)
-
     def test_pass_audit_NotAnOption(self):
         """Testing: pass audit --not-an-option."""
         cmd = ['--not-an-option', '-q']
