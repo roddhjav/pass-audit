@@ -222,7 +222,8 @@ def main(argv):
 
     # Sanity checks
     if arg.paths is None:
-        die("pass-names not present. See 'pass audit -h'")
+        arg.paths = ""
+        message("Auditing whole store - this may take some time")
     store = PasswordStore()
     if not store.exist():
         die("no password store to audit.")
