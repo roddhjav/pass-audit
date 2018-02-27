@@ -2,17 +2,20 @@
 <p align="center">
     <a href="https://travis-ci.org/roddhjav/pass-audit">
         <img src="https://img.shields.io/travis/roddhjav/pass-audit/master.svg"
-            alt="Build Status"></a>
+             alt="Build Status"></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
         <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg"
-	          alt="Code Coverage" /></a>
+	           alt="Code Coverage" /></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
         <img src="https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg"
-            alt="Code Quality"></a>
+             alt="Code Quality"></a>
+    <a href="https://github.com/roddhjav/pass-audit/releases/latest">
+        <img src="https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600"
+             alt="Last Release" /></a>
 </p>
 <p align="center">
-A <a href="https://www.passwordstore.org/">pass</a> extension for auditing your
-password repository.
+    A <a href="https://www.passwordstore.org/">pass</a> extension for auditing
+    your password repository.
 </p>
 
 ## Description
@@ -22,8 +25,8 @@ using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 (fully) trust the server that stores the breached password. You should read the
 [security consideration](#security-consideration) section for more information.
 
-**Warning** This extension is still in development. As of today, it only
-supports password breach detection from HIBP. Must more features are planned
+**Warning** This extension is still under development. As of today, it only
+supports password breach detection from HIBP. Much more features are planned
 including but not limited to:
 * Full support for haveibeenpwned API,
 * Extended support for password breached API,
@@ -84,31 +87,19 @@ More reading:
 
 
 ## Installation
-If you do not wish to install this extension as system extension, you need to
-enable user extension with `PASSWORD_STORE_ENABLE_EXTENSIONS=true pass`. You can
-create an alias in `.bashrc`: `alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'`.
-Otherwise you should use one of the following method to install a system
-extemsion.
 
 **Requirements**
 * `pass 1.7.0` or greater.
 * `python3` (python 3.4, 3.5 and 3.6 are supported)
 * `python-requests`
-  - Debian/Ubuntu: `sudo apt-get install python3-defusedxml`
+  - Debian/Ubuntu: `sudo apt-get install python3-requests`
   - OSX: `pip3 install requests`
 
 **From git**
 ```sh
 git clone https://github.com/roddhjav/pass-audit/
-cd pass-import
-sudo make install
-```
-
-**OS X**
-```sh
-git clone https://github.com/roddhjav/pass-audit/
-cd pass-import
-make install PREFIX=/usr/local
+cd pass-audit
+sudo make install  # For OSX: make install PREFIX=/usr/local
 ```
 
 **ArchLinux**
@@ -116,6 +107,22 @@ make install PREFIX=/usr/local
 `pass-audit` is available in the [Arch User Repository][aur].
 ```sh
 pacaur -S pass-audit  # or your preferred AUR install method
+```
+
+**Stable version**
+```sh
+wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz
+tar xzf pass-audit-0.1.tar.gz
+cd pass-audit-0.1
+sudo make install  # For OSX: make install PREFIX=/usr/local
+```
+
+[Releases][releases] and commits are signed using [`06A26D531D56C42D66805049C5469996F0DF68EC`][keys].
+You should check the key's fingerprint and verify the signature:
+```sh
+wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz.asc
+gpg --recv-keys 06A26D531D56C42D66805049C5469996F0DF68EC
+gpg --verify pass-audit-0.1.tar.gz.asc
 ```
 
 
@@ -140,7 +147,9 @@ Feedback, contributors, pull requests are all very welcome.
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+[keys]: https://pujol.io/keys
 [aur]: https://aur.archlinux.org/packages/pass-audit
+[releases]: https://github.com/roddhjav/pass-audit/releases
 [pass]: https://www.passwordstore.org/
 [Kanonymity]: https://en.wikipedia.org/wiki/K-anonymity
 [HIBP]: https://haveibeenpwned.com/
