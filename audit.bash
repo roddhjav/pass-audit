@@ -18,12 +18,9 @@
 
 readonly CMD="audit"
 readonly LIBDIR="${PASSWORD_STORE_LIBDIR:-/usr/lib/password-store/$CMD}"
-readonly Bold='\e[1m' Bred='\e[1;31m' reset='\e[0m'
-_error() { echo -e " ${Bred}[x]${reset} ${Bold}Error:${reset} ${*}" >&2; }
-_die() { _error "${@}" && exit 1; }
 _ensure_dependencies() {
-	command -v "python3" &>/dev/null || _die "$PROGRAM $COMMAND requires python3"
-	[[ -f "${LIBDIR}/${CMD}.py" ]] || _die "$PROGRAM $COMMAND requires ${LIBDIR}/$CMD.py"
+	command -v "python3" &>/dev/null || die "$PROGRAM $COMMAND requires python3"
+	[[ -f "${LIBDIR}/${CMD}.py" ]] || die "$PROGRAM $COMMAND requires ${LIBDIR}/$CMD.py"
 }
 
 cmd_audit() {

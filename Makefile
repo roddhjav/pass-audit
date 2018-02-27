@@ -20,7 +20,8 @@ install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"
 	@install -v -d "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/"
 	@install -v -d "$(DESTDIR)$(EXTENSION_LIB)/"
-	@install -v -m 0755 "$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
+	@trap 'rm -f .audit.bash' EXIT; sed "s|/usr/lib|$(LIBDIR)|" "$(PROG).bash" > ".$(PROG).bash" && \
+	install -v -m 0755 ".$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
 	@install -v -m 0755 "lib/$(PROG).py" "$(DESTDIR)$(EXTENSION_LIB)/$(PROG).py"
 	@install -v -m 0644 "pass-$(PROG).1" "$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1"
 	@echo
