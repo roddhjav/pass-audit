@@ -253,7 +253,7 @@ def main(argv):
     # Report!
     if len(breached) == 0:
         success("None of the %s passwords tested are breached." % len(data))
-        message("But it does not means they are strong.")
+        message("But this does not mean they are strong.")
     else:
         error("%d passwords tested and %d breached passwords found."
               % (len(data), len(breached)))
