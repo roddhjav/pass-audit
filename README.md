@@ -97,7 +97,7 @@ More reading:
 
 **From git**
 ```sh
-git clone https://github.com/roddhjav/pass-audit/
+git clone --recurse-submodules https://github.com/roddhjav/pass-audit/
 cd pass-audit
 sudo make install  # For OSX: make install PREFIX=/usr/local
 ```

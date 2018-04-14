@@ -23,6 +23,7 @@ install:
 	@trap 'rm -f .audit.bash' EXIT; sed "s|/usr/lib|$(LIBDIR)|" "$(PROG).bash" > ".$(PROG).bash" && \
 	install -v -m 0755 ".$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
 	@install -v -m 0755 "lib/$(PROG).py" "$(DESTDIR)$(EXTENSION_LIB)/$(PROG).py"
+	cp -r "zxcvbn-python/zxcvbn/" "$(DESTDIR)$(EXTENSION_LIB)/"
 	@install -v -m 0644 "pass-$(PROG).1" "$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1"
 	@echo
 	@echo "pass-$(PROG) is installed succesfully"

@@ -23,6 +23,7 @@ import hashlib
 import argparse
 from subprocess import Popen, PIPE
 import requests
+from zxcvbn import zxcvbn
 
 
 BASEAPIURL = "https://api.pwnedpasswords.com/"
@@ -67,6 +68,13 @@ def error(msg=''):
 def die(msg=''):
     error(msg)
     exit(1)
+
+
+def zxcvbn_parse(details):
+    return ("Score %s (%s guesses). This estimate is based on the sequence %s" %
+        (details['score'], details['guesses'],
+        ' + '.join([x['token']+'('+x['pattern']+')' for x in details['sequence']])
+        ))
 
 
 class PasswordStoreError(Exception):
@@ -139,7 +147,7 @@ class PasswordStore():
 
     def show(self, path):
         """Decrypt path and read the password from the password file."""
-        return self._pass(['show', path]).split('\n')[0]
+        return self._pass(['show', path])
 
     def exist(self):
         """Return True if the password store is initialized."""
@@ -174,10 +182,11 @@ class PassAudit():
         # Generate the list of hashes and prefixes to query.
         data = []
         prefixes = []
-        for path, password in self.data.items():
+        for path, payload in self.data.items():
+            password = payload.split('\n')[0]
             phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()
             prefix = phash[0:5]
-            data.append((path, password, phash, prefix))
+            data.append((path, payload, phash, prefix))
             if prefix not in prefixes:
                 prefixes.append(prefix)
 
@@ -188,12 +197,30 @@ class PassAudit():
 
         # Compare the data and return the breached passwords.
         breached = []
-        for path, password, phash, prefix in data:
+        for path, payload, phash, prefix in data:
+            password = payload.split('\n')[0]
             if phash in buckets[prefix][0]:
                 index = buckets[prefix][0].index(phash)
                 count = buckets[prefix][1][index]
                 breached.append((path, password, count))
         return breached
+
+    def zxcvbn(self):
+        """password strength estimaton usuing Dropbox' zxccvbn"""
+        breached = []
+        for path, payload in self.data.items():
+            payload_lines = payload.split('\n')
+            password = payload_lines[0]
+            user_input = []
+            for line in payload_lines:
+                # extract "login:", "url:", etc.
+                split_line = line.split(':', 1)
+                if len(split_line) > 1:
+                    user_input.append(split_line[1])
+            results = zxcvbn(password, user_inputs=user_input + path.split("/"))
+            if results['score'] <= 2:
+                breached.append((path, password, results))
+            return breached
 
 
 def main(argv):
@@ -246,17 +273,21 @@ def main(argv):
     # Start the audit of the password store
     audit = PassAudit(data)
     breached = audit.password()
-    for path, password, count in breached:
+    for path, payload, count in breached:
         warning("Password breached: %s from %s has been breached %s time(s)."
-                % (password, path, count))
+                % (payload, path, count))
+    weak = audit.zxcvbn()
+    for path, payload, details in weak:
+        warning("Weak password detected: %s from %s might be weak. %s"
+                % (payload, path, zxcvbn_parse(details)))
 
     # Report!
-    if len(breached) == 0:
+    if len(breached) == 0 and len(weak) == 0:
         success("None of the %s passwords tested are breached." % len(data))
         message("But this does not mean they are strong.")
     else:
-        error("%d passwords tested and %d breached passwords found."
-              % (len(data), len(breached)))
+        error("%d passwords tested and %d breached, %d weak passwords found."
+              % (len(data), len(breached), len(weak)))
         message("You should update them with 'pass-update'.")
 
 
