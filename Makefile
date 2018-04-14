@@ -15,6 +15,12 @@ all:
 	@echo "     password store"
 	@echo "     python3"
 	@echo "     python3-requests"
+	@echo "     zxcvbn-python (either install with 'pip3 install zxcvbn' or locally with 'make zxcvbn')"
+
+zxcvbn:
+	git submodule add https://github.com/dwolfhub/zxcvbn-python || git submodule init zxcvbn-python
+	@install -v -d "$(DESTDIR)$(EXTENSION_LIB)/"
+	cp -r "zxcvbn-python/zxcvbn/" "$(DESTDIR)$(EXTENSION_LIB)/"
 
 install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"
@@ -23,7 +29,6 @@ install:
 	@trap 'rm -f .audit.bash' EXIT; sed "s|/usr/lib|$(LIBDIR)|" "$(PROG).bash" > ".$(PROG).bash" && \
 	install -v -m 0755 ".$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
 	@install -v -m 0755 "lib/$(PROG).py" "$(DESTDIR)$(EXTENSION_LIB)/$(PROG).py"
-	cp -r "zxcvbn-python/zxcvbn/" "$(DESTDIR)$(EXTENSION_LIB)/"
 	@install -v -m 0644 "pass-$(PROG).1" "$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1"
 	@echo
 	@echo "pass-$(PROG) is installed succesfully"
@@ -44,4 +49,4 @@ lint:
 clean:
 	@rm -vrf tests/test-results/ tests/gnupg/random_seed
 
-.PHONY: install uninstall tests lint clean
+.PHONY: zxcvbn install uninstall tests lint clean

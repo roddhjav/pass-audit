@@ -1,3 +1,0 @@
-[submodule "zxcvbn-python"]
-	path = zxcvbn-python
-	url = https://github.com/dwolfhub/zxcvbn-python
