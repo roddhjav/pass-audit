@@ -15,12 +15,7 @@ all:
 	@echo "     password store"
 	@echo "     python3"
 	@echo "     python3-requests"
-	@echo "     zxcvbn-python (either install with 'pip3 install zxcvbn' or locally with 'make zxcvbn')"
-
-zxcvbn:
-	git submodule add https://github.com/dwolfhub/zxcvbn-python || git submodule init zxcvbn-python
-	@install -v -d "$(DESTDIR)$(EXTENSION_LIB)/"
-	cp -r "zxcvbn-python/zxcvbn/" "$(DESTDIR)$(EXTENSION_LIB)/"
+	@echo "     zxcvbn"
 
 install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"
@@ -49,4 +44,4 @@ lint:
 clean:
 	@rm -vrf tests/test-results/ tests/gnupg/random_seed
 
-.PHONY: zxcvbn install uninstall tests lint clean
+.PHONY: install uninstall tests lint clean

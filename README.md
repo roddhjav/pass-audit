@@ -96,8 +96,7 @@ More reading:
 * `python-requests`
   - Debian/Ubuntu: `sudo apt-get install python3-requests`
   - OSX: `pip3 install requests`
-* `zxcvbn-python`
-  - `pip3 install zxcvbn` or `make zxcvbn`
+* `zxcvbn-python` (`pip3 install zxcvbn`)
 
 **From git**
 ```sh
