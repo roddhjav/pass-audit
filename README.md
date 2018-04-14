@@ -20,6 +20,8 @@
 
 ## Description
 `pass audit` is a password-store extension for auditing your password repository.
+Passwords will be checked against the Python implementation of Dropbox'
+[`zxcvbn`][zxcvbn] algorithm and Troy Hunt's *Have I Been Pwned* Service.
 It supports safe breached password detection from [haveibeenpwned.com][HIBP]
 using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 (fully) trust the server that stores the breached password. You should read the
@@ -94,10 +96,12 @@ More reading:
 * `python-requests`
   - Debian/Ubuntu: `sudo apt-get install python3-requests`
   - OSX: `pip3 install requests`
+* `zxcvbn-python`
+  - `pip3 install zxcvbn` or `make zxcvbn`
 
 **From git**
 ```sh
-git clone --recurse-submodules https://github.com/roddhjav/pass-audit/
+git clone https://github.com/roddhjav/pass-audit/
 cd pass-audit
 sudo make install  # For OSX: make install PREFIX=/usr/local
 ```
@@ -129,10 +133,13 @@ gpg --verify pass-audit-0.1.tar.gz.asc
 ## Contribution
 Feedback, contributors, pull requests are all very welcome.
 
+### Contributors
+ * [Tobias Girstmair](https://gir.st/) (zxcvbn)
+
 
 ## License
 
-    Copyright (C) 2018  Alexandre PUJOL
+    Copyright (C) 2018  Alexandre PUJOL and Contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -153,3 +160,4 @@ Feedback, contributors, pull requests are all very welcome.
 [pass]: https://www.passwordstore.org/
 [Kanonymity]: https://en.wikipedia.org/wiki/K-anonymity
 [HIBP]: https://haveibeenpwned.com/
+[zxcvbn]: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
