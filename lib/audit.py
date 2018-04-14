@@ -216,11 +216,11 @@ class PassAudit():
                 # extract "login:", "url:", etc.
                 split_line = line.split(':', 1)
                 if len(split_line) > 1:
-                    user_input.append(split_line[1])
+                    user_input += split_line[1].split()
             results = zxcvbn(password, user_inputs=user_input + path.split("/"))
             if results['score'] <= 2:
                 breached.append((path, password, results))
-            return breached
+        return breached
 
 
 def main(argv):
