@@ -15,6 +15,7 @@ all:
 	@echo "     password store"
 	@echo "     python3"
 	@echo "     python3-requests"
+	@echo "     zxcvbn"
 
 install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"

@@ -39,7 +39,7 @@ class TestPassAudit(setup.TestPass):
         self.assertTrue(len(breached) == self.passwords_nb)
         for path, password, count in breached:
             self.assertIn(path, data)
-            self.assertTrue(data[path] == password)
+            self.assertTrue(data[path].split('\n')[0] == password)
             ref_index = int(path[-1:]) - 1
             self.assertTrue(ref_counts[ref_index] == count)
 

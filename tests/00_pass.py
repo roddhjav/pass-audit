@@ -67,7 +67,7 @@ class TestPassStore(setup.TestPass):
         """Testing: pass show password."""
         path = "Social/mastodon.social"
         password = "D<INNeT?#?Bf4%`zA/4i!/'$T"
-        self.assertEqual(self.store.show(path), password)
+        self.assertEqual(self.store.show(path).split('\n')[0], password)
 
 
 if __name__ == '__main__':
