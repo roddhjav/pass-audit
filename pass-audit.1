@@ -1,4 +1,4 @@
-.TH MARK 1 "February 2018" "pass-audit"
+.TH "pass-audit" 1 "April 2018" "pass-audit"
 
 .SH NAME
 \fBpass audit\fP - A \fIpass\fP(1) extension for auditing your password repository.
@@ -10,7 +10,7 @@
 .SH DESCRIPTION
 \fBpass audit\fP is a password store extension for auditing your password
 repository. It supports safe breached password detection from haveibeenpwned.com
-using K-anonymity method.
+using K-anonymity method and password strength estimation by Dropbox' zxcvbn.
 
 
 .SH COMMAND
@@ -46,11 +46,11 @@ Show usage message.
 
 
 .SH AUTHORS
-.B pass import
+.B pass audit
 was written by
 .MT alexandre@pujol.io
 Alexandre Pujol
-.ME .
+.ME \\ and contributors.
 
 
 .SH COPYING
