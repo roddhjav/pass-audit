@@ -138,7 +138,10 @@ class PasswordStore():
             paths = [path]
         else:
             paths = []
-            for file in glob.glob(prefix + '*/**/*.gpg', recursive=True):
+            pattern = self.prefix + '/**/*.gpg'
+            if path:
+                pattern = prefix + '*/**/*.gpg'
+            for file in glob.glob(pattern, recursive=True):
                 if not file[0] == '.':
                     file = os.path.splitext(file)[0]
                     file = file[len(self.prefix)+1:]
