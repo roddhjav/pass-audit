@@ -32,7 +32,7 @@ class TestPassAudit(setup.TestPass):
 
     def test_password_pwned(self):
         """Testing: pass audit for password breached with K-anonymity method."""
-        ref_counts = [47205, 2, 103, 1218, 3303003, 75590, 357]
+        ref_counts = [51259, 3, 114, 1352, 3645804, 78773, 396]
         data = self._getdata("Password/pwned")
         audit = self.passaudit.PassAudit(data)
         breached = audit.password()
