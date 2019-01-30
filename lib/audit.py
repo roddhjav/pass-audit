@@ -215,7 +215,7 @@ class PassAudit():
             payload_lines = payload.split('\n')
             password = payload_lines[0]
             user_input = []
-            for line in payload_lines:
+            for line in payload_lines[1:]:
                 # extract "login:", "url:", etc.
                 split_line = line.split(':', 1)
                 if len(split_line) > 1:
