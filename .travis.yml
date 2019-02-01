@@ -13,7 +13,7 @@ matrix:
 
 env:
   global:
-    - PASS_VERSION=1.7.1
+    - PASS_VERSION=1.7.3
 
 install:
   - export PREFIX=$HOME/.bin/usr PATH="$PATH:$HOME/.bin/usr/bin"
@@ -26,7 +26,7 @@ script:
   - make tests
 
 after_success:
-  - cd tests && coverage xml
+  - coverage xml
   - python-codacy-coverage -r coverage.xml
 
 notifications:
