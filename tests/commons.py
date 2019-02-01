@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,41 +17,39 @@
 #
 
 import os
-import sys
-import shutil
 import unittest
-import importlib
+import pass_audit
 
 
-class TestPass(unittest.TestCase):
+class TestBase(unittest.TestCase):
     tmp = "/tmp/pass-audit/python/"
-    gpgid = "D4C78DB7920E1E27F5416B81CC9DB947CF90C77B"
-    prefix = "audit-store"
+    gpgids = ['D4C78DB7920E1E27F5416B81CC9DB947CF90C77B', '']
+    prefix = "tests/audit-store"
+
+
+class TestPass(TestBase):
+    """Base test class for passwordstore related tests.
+    This base test class provides the unittest with.
+        1. A working gpg keyring
+        2. A directory where it can create new password store
+        3. A _passinit function
+    """
 
     @classmethod
     def setUpClass(self):
-        # Getting pass-audit module
-        try:
-            sys.path.append('../lib')
-            self.passaudit = importlib.import_module('audit')
-        except Exception as e:
-            print("Unable to find audit.py: %s", e)
-            exit(1)
-
-        # GPG Config
+        # GPG Settings
         if 'GPG_AGENT_INFO' in os.environ:
-            os.environ.pop('GPG_AGENT_INFO', None)
-        os.environ['GNUPGHOME'] = os.path.join(os.getcwd(), 'gnupg')
+            os.environ.pop('GPG_AGENT_INFO')
+        os.environ['GNUPGHOME'] = os.path.join(os.getcwd(), 'tests/gnupg')
 
-        # Pass config
-        os.environ['PASSWORD_STORE_BIN'] = shutil.which("pass")
+        # Set PASSWORD_STORE_DIR & declare a passwordstore object
         os.environ['PASSWORD_STORE_DIR'] = self.prefix
-        self.store = self.passaudit.PasswordStore()
+        self.store = pass_audit.PasswordStore()
         os.makedirs(self.tmp, exist_ok=True)
 
     def _passinit(self):
         with open(os.path.join(self.store.prefix, '.gpg-id'), 'w') as file:
-            file.write("%s\n" % self.gpgid)
+            file.write('\n'.join(self.gpgids))
 
     def _getdata(self, root):
         data = dict()

@@ -16,14 +16,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import unittest
-import setup
+from .. import pass_audit
+from tests.commons import TestPass
 
 
-class TestPwnedAPI(setup.TestPass):
+class TestPwnedAPI(TestPass):
 
     def setUp(self):
-        self.api = self.passaudit.PwnedAPI()
+        self.api = pass_audit.PwnedAPI()
 
     def test_password_range(self):
         """Testing: https://api.haveibeenpwned.com/range API."""
@@ -34,7 +34,3 @@ class TestPwnedAPI(setup.TestPass):
         self.assertTrue(counts[hashes.index(hash)] == 51259)
         self.assertTrue(len(hashes) == len(counts))
         self.assertTrue(len(hashes) == 527)
-
-
-if __name__ == '__main__':
-    unittest.main()

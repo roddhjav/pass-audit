@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,17 +16,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import unittest
-import setup
+from .. import pass_audit
+from tests.commons import TestPass
 
 
-class TestPassAudit(setup.TestPass):
+class TestPassAudit(TestPass):
     passwords_nb = 7
 
     def test_password_notpwned(self):
         """Testing: pass audit for password not breached with K-anonymity method."""
         data = self._getdata("Password/notpwned")
-        audit = self.passaudit.PassAudit(data)
+        audit = pass_audit.PassAudit(data)
         breached = audit.password()
         self.assertTrue(len(breached) == 0)
 
@@ -34,7 +34,7 @@ class TestPassAudit(setup.TestPass):
         """Testing: pass audit for password breached with K-anonymity method."""
         ref_counts = [51259, 3, 114, 1352, 3645804, 78773, 396]
         data = self._getdata("Password/pwned")
-        audit = self.passaudit.PassAudit(data)
+        audit = pass_audit.PassAudit(data)
         breached = audit.password()
         self.assertTrue(len(breached) == self.passwords_nb)
         for path, password, count in breached:
@@ -42,7 +42,3 @@ class TestPassAudit(setup.TestPass):
             self.assertTrue(data[path].split('\n')[0] == password)
             ref_index = int(path[-1:]) - 1
             self.assertTrue(ref_counts[ref_index] == count)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,18 +17,19 @@
 #
 
 import os
-import unittest
-import setup
+
+from .. import pass_audit
+from tests.commons import TestPass
 
 
-class TestPassAuditCMD(setup.TestPass):
+class TestPassAuditCMD(TestPass):
 
     def _passaudit(self, cmd, code=None):
         if code is None:
-            self.passaudit.main(cmd)
+            pass_audit.main(cmd)
         else:
             with self.assertRaises(SystemExit) as cm:
-                self.passaudit.main(cmd)
+                pass_audit.main(cmd)
             self.assertEqual(cm.exception.code, code)
 
     def test_pass_audit_help(self):
@@ -55,6 +56,21 @@ class TestPassAuditCMD(setup.TestPass):
         os.rename(os.path.join(self.store.prefix, 'backup.gpg-id'),
                   os.path.join(self.store.prefix, '.gpg-id'))
 
+    def test_pass_audit_InvalidID(self):
+        """Testing: invalid user ID."""
+        os.rename(os.path.join(self.store.prefix, '.gpg-id'),
+                  os.path.join(self.store.prefix, 'backup.gpg-id'))
+        self.gpgids = ['']
+        self._passinit()
+        self._passaudit([''], 1)
+        os.rename(os.path.join(self.store.prefix, 'backup.gpg-id'),
+                  os.path.join(self.store.prefix, '.gpg-id'))
+
+    def test_pass_audit_NotAFile(self):
+        """Testing: pass audit not_a_file."""
+        cmd = ['not_a_file']
+        self._passaudit(cmd, 1)
+
     def test_pass_audit_passwords_notpwned(self):
         """Testing: pass audit Password/notpwned."""
         cmd = ['Password/notpwned']
@@ -65,6 +81,12 @@ class TestPassAuditCMD(setup.TestPass):
         cmd = ['Password/pwned']
         self._passaudit(cmd)
 
+    def test_pass_audit_passwords_good(self):
+        """Testing: pass audit Password/good."""
+        cmd = ['Password/good']
+        self._passaudit(cmd)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_pass_audit_passwords_all(self):
+        """Testing: pass audit ."""
+        cmd = ['']
+        self._passaudit(cmd)

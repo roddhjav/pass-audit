@@ -1,6 +1,7 @@
 [paths]
-source = ../lib/audit.py
+source = pass_audit.py
 
 [report]
 exclude_lines =
+    pragma: no cover
     if __name__ == .__main__.:
