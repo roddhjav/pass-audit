@@ -28,9 +28,9 @@ class TestPwnedAPI(TestPass):
     def test_password_range(self):
         """Testing: https://api.haveibeenpwned.com/range API."""
         prefix = '21BD1'
-        hash = '21BD12DC183F740EE76F27B78EB39C8AD972A757'
+        Hash = '21BD12DC183F740EE76F27B78EB39C8AD972A757'
         hashes, counts = self.api.password_range(prefix)
-        self.assertIn(hash, hashes)
-        self.assertTrue(counts[hashes.index(hash)] == 51259)
+        self.assertIn(Hash, hashes)
+        self.assertTrue(counts[hashes.index(Hash)] == 51259)
         self.assertTrue(len(hashes) == len(counts))
         self.assertTrue(len(hashes) == 527)

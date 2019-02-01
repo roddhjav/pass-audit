@@ -33,7 +33,7 @@ PROJECT_HOME="$(dirname "$TESTS_HOME")"
 
 # Check dependencies
 _die() { echo "${@}" && exit 1; }
-PASS="$(which pass)"; GPG="$(which gpg)"; GIT=true
+PASS="$(which pass)"; GPG="$(which gpg)"
 [[ -e "$PASS" ]] || _die "Could not find pass command"
 [[ -e "$GPG" ]] || _die "Could not find gpg command"
 _pass() { "$PASS" "${@}"; }
