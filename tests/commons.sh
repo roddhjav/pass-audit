@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,31 +24,28 @@
 #   $TEST_HOME	This folder
 #
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091,SC2230
 
 # Project directory
-TEST_HOME="$(pwd)"
-EXT_HOME="$(dirname "$TEST_HOME")"
+TESTS_HOME="$(pwd)"
+PROJECT_HOME="$(dirname "$TESTS_HOME")"
 
 
 # Check dependencies
 _die() { echo "${@}" && exit 1; }
 PASS="$(which pass)"; GPG="$(which gpg)"; GIT=true
 [[ -e "$PASS" ]] || _die "Could not find pass command"
-if [[ ! -e "$GPG" ]]; then
-	if which gpg2 &>/dev/null; then
-		GPG="gpg2"
-	else
-		_die "Could not find gpg command"
-	fi
-fi
+[[ -e "$GPG" ]] || _die "Could not find gpg command"
 _pass() { "$PASS" "${@}"; }
 
 
 # sharness config
+export SHARNESS_TEST_DIRECTORY="$TESTS_HOME"
+export SHARNESS_TEST_SRCDIR="$PROJECT_HOME"
 source ./sharness
 export TMP="/tmp/pass-audit/bash"
-[[ -z "$TRAVIS_JOB_ID" ]] || test_set_prereq TRAVIS
+export PYTHONPATH="$PROJECT_HOME:$PYTHONPATH"
+[[ -z "$CI" ]] || test_set_prereq CI
 
 
 #  Prepare pass config vars
@@ -69,14 +66,13 @@ unset GNUPGHOME
 unset EDITOR
 
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
-export PASSWORD_STORE_EXTENSIONS_DIR="$EXT_HOME"
-export PASSWORD_STORE_LIBDIR="$EXT_HOME/lib"
-export PASSWORD_STORE_DIR="$TEST_HOME/audit-store"
+export PASSWORD_STORE_EXTENSIONS_DIR="$PROJECT_HOME"
+export PASSWORD_STORE_DIR="$TESTS_HOME/audit-store"
 
 
 # GnuPG config
 unset GPG_AGENT_INFO
-export GNUPGHOME="$TEST_HOME/gnupg/"
+export GNUPGHOME="$TESTS_HOME/gnupg/"
 export KEY1="D4C78DB7920E1E27F5416B81CC9DB947CF90C77B"
 export KEY2="70BD448330ACF0653645B8F2B4DDBFF0D774A374"
 export KEY3="62EBE74BE834C2EC71E6414595C4B715EB7D54A8"

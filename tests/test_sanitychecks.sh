@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 export test_description="Testing 'pass audit'"
-
-source ./setup
+cd tests
+source ./commons.sh
 
 test_expect_success 'Testing corner cases' '
     test_must_fail _pass audit --not-an-option
@@ -13,7 +13,7 @@ test_expect_success 'Testing help message' '
     _pass audit --version | grep "pass audit"
     '
 
-if test_have_prereq TRAVIS; then
+if test_have_prereq CI; then
     export PASSWORD_STORE_ENABLE_EXTENSIONS=''
     export PASSWORD_STORE_EXTENSIONS_DIR=''
     test_expect_success 'Testing extension installation' '
