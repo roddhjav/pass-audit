@@ -1,16 +1,19 @@
 <h1 align="center">pass audit</h1>
 <p align="center">
     <a href="https://travis-ci.org/roddhjav/pass-audit">
-        <img src="https://img.shields.io/travis/roddhjav/pass-audit/master.svg"
+        <img src="https://img.shields.io/travis/roddhjav/pass-audit/master.svg?style=flat-square"
              alt="Build Status"></a>
+    <a href="https://gitlab.com/roddhjav/pass-audit/pipelines">
+        <img src="https://gitlab.com/roddhjav/pass-audit/badges/master/pipeline.svg?style=flat-square"
+             alt="Pipeline Status" /></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
-        <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg"
+        <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square"
 	           alt="Code Coverage" /></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">
-        <img src="https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg"
+        <img src="https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square"
              alt="Code Quality"></a>
     <a href="https://github.com/roddhjav/pass-audit/releases/latest">
-        <img src="https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600"
+        <img src="https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600&style=flat-square"
              alt="Last Release" /></a>
 </p>
 <p align="center">
@@ -27,24 +30,19 @@ using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 (fully) trust the server that stores the breached password. You should read the
 [security consideration](#security-consideration) section for more information.
 
-**Warning** This extension is still under development. As of today, it only
-supports password breach detection from HIBP. Much more features are planned
-including but not limited to:
-* Full support for haveibeenpwned API,
-* Extended support for password breached API,
-* Fully featured, local password store analysis.
-
 
 ## Usage
 
 ```
-usage: pass audit [-h] [-V] [paths]
+usage: pass audit [-h] [-V] pass-names
 
   A pass extension for auditing your password repository. It supports safe
-  breached password detection from haveibeenpwned.com using K-anonymity method.
+  breached password detection from haveibeenpwned.com using K-anonymity method
+  and password strength estimaton usuing zxcvbn.
 
 positional arguments:
-  paths          Path to audit in the password store.
+  pass-names     Path(s) to audit in the password store, If empty audit the
+                 full store.
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -83,7 +81,7 @@ remote server is a recent cryptographic approach. It means only the first five
 characters of the SHA1 hash of your password is sent to the server. It offers
 decent anonymity; nevertheless, it is not an entirely secure solution.
 
-More reading:
+**More reading:**
 * https://www.troyhunt.com/ive-just-launched-pwned-passwords-version-2/
 * https://blog.cloudflare.com/validating-leaked-passwords-with-k-anonymity/
 
@@ -92,24 +90,25 @@ More reading:
 
 **Requirements**
 * `pass 1.7.0` or greater.
-* `python3` (python 3.4, 3.5 and 3.6 are supported)
-* `python-requests`
+* `python3` (python 3.5 and 3.6 are supported)
+* `python3-requests`
   - Debian/Ubuntu: `sudo apt-get install python3-requests`
   - OSX: `pip3 install requests`
-* `zxcvbn-python` (`pip3 install zxcvbn`)
-
-**From git**
-```sh
-git clone https://github.com/roddhjav/pass-audit/
-cd pass-audit
-sudo make install  # For OSX: make install PREFIX=/usr/local
-```
+* `python3-zxcvbn` (`pip3 install zxcvbn`)
 
 **ArchLinux**
 
 `pass-audit` is available in the [Arch User Repository][aur].
 ```sh
-pacaur -S pass-audit  # or your preferred AUR install method
+yay -S pass-audit  # or your preferred AUR install method
+```
+
+**From git**
+```sh
+git clone https://github.com/roddhjav/pass-audit/
+cd pass-audit
+make
+sudo make install  # For OSX: make install PREFIX=/usr/local
 ```
 
 **Stable version**
@@ -117,6 +116,7 @@ pacaur -S pass-audit  # or your preferred AUR install method
 wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz
 tar xzf pass-audit-0.1.tar.gz
 cd pass-audit-0.1
+make
 sudo make install  # For OSX: make install PREFIX=/usr/local
 ```
 
@@ -126,6 +126,14 @@ You should check the key's fingerprint and verify the signature:
 wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz.asc
 gpg --recv-keys 06A26D531D56C42D66805049C5469996F0DF68EC
 gpg --verify pass-audit-0.1.tar.gz.asc
+```
+
+**Local install***
+
+Alternatively, from git or a stable version you can do a local install with:
+```sh
+cd pass-audit
+make local
 ```
 
 
