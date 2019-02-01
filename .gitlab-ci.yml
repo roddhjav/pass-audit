@@ -1,0 +1,78 @@
+---
+
+stages:
+  - lint
+  - test
+
+bash:
+  stage: lint
+  image: koalaman/shellcheck-alpine
+  script:
+    - shellcheck --shell=bash audit.bash tests/commons.sh
+
+python:
+  stage: lint
+  image: python:latest
+  before_script:
+    - pip install prospector[with_everything] requests zxcvbn
+  script:
+    - make lint
+
+sast:
+  stage: lint
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SAST_CONFIDENCE_LEVEL="${SAST_BRAKEMAN_LEVEL:-1}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+
+.script: &script
+  stage: test
+  script:
+    - pip3 install green coverage requests zxcvbn
+    - make tests
+
+.only: &only
+  only:
+   - tags
+   - web
+
+archlinux:
+  image: archlinux/base
+  before_script:
+    - pacman -Syu --noconfirm --noprogressbar make python-pip which grep pass
+  <<: *script
+
+ubuntu:
+  image: ubuntu
+  before_script:
+    - apt-get update -q && apt-get install -y make pass python3-pip grep
+  <<: *script
+  <<: *only
+
+debian:
+  image: debian
+  before_script:
+    - apt-get update -q && apt-get install -y make pass python3-pip grep wget
+    - wget https://git.zx2c4.com/password-store/snapshot/password-store-1.7.3.tar.xz
+    - tar -xf password-store-1.7.3.tar.xz
+    - make --directory=password-store-1.7.3 install
+  <<: *script
+  <<: *only
+
+fedora:
+  image: fedora
+  before_script:
+    - dnf -y install --setopt=install_weak_deps=False make gpg pass python3-pip grep which
+  <<: *script
+  <<: *only
