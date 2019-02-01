@@ -1,35 +1,30 @@
 PROG ?= audit
 PREFIX ?= /usr
-DESTDIR ?=
+DESTDIR ?= /
 LIBDIR ?= $(PREFIX)/lib
 SYSTEM_EXTENSION_DIR ?= $(LIBDIR)/password-store/extensions
-EXTENSION_LIB ?= $(LIBDIR)/password-store/$(PROG)
 MANDIR ?= $(PREFIX)/share/man
 
 BASHCOMPDIR ?= /etc/bash_completion.d
 ZSHCOMPDIR ?= $(PREFIX)/share/zsh/site-functions
 
 all:
-	@echo "pass-$(PROG) is a shell script and does not need compilation, it can be simply executed."
+	@python3 setup.py build
 	@echo
-	@echo "To install it try \"make install\" instead."
+	@echo "pass-$(PROG) was built succesfully. You can now install it wit \"make install\""
 	@echo
 	@echo "To run pass $(PROG) one needs to have some tools installed on the system:"
-	@echo "     password store"
-	@echo "     python3"
-	@echo "     python3-requests"
-	@echo "     zxcvbn"
+	@echo "     password-store, python3, python3-requests and python3-zxcvbn"
 
 install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"
 	@install -v -d "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/"
-	@install -v -d "$(DESTDIR)$(EXTENSION_LIB)/"
-	@trap 'rm -f .audit.bash' EXIT; sed "s|/usr/lib|$(LIBDIR)|" "$(PROG).bash" > ".$(PROG).bash" && \
-	install -v -m 0755 ".$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
-	@install -v -m 0755 "lib/$(PROG).py" "$(DESTDIR)$(EXTENSION_LIB)/$(PROG).py"
+	@install -v -d "$(DESTDIR)$(BASHCOMPDIR)"
+	@install -v -m 0755 "$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
 	@install -v -m 0644 "pass-$(PROG).1" "$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1"
 	@install -v -m 0644 "completion/pass-$(PROG).bash" "$(DESTDIR)$(BASHCOMPDIR)/pass-$(PROG)"
 	@install -v -m 0644 "completion/pass-$(PROG).zsh" "$(DESTDIR)$(ZSHCOMPDIR)/_pass-$(PROG)"
+	@python3 setup.py install --root="$(DESTDIR)" --prefix="$(PREFIX)" --optimize=1 --skip-build
 	@echo
 	@echo "pass-$(PROG) is installed succesfully"
 	@echo
@@ -37,10 +32,20 @@ install:
 uninstall:
 	@rm -vrf \
 		"$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash" \
-		"$(DESTDIR)$(EXTENSION_LIB)" \
 		"$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1" \
 		"$(DESTDIR)$(ZSHCOMPDIR)/_pass-$(PROG)" \
 		"$(DESTDIR)$(BASHCOMPDIR)/pass-$(PROG)"
+
+
+PASSWORD_STORE_DIR ?= $(HOME)/.password-store
+PASSWORD_STORE_EXTENSIONS_DIR ?= $(PASSWORD_STORE_DIR)/.extensions
+local:
+	@install -v -d "$(DESTDIR)$(PASSWORD_STORE_EXTENSIONS_DIR)/"
+	@install -v -m 0755 "$(PROG).bash" "$(DESTDIR)$(PASSWORD_STORE_EXTENSIONS_DIR)/$(PROG).bash"
+	@python3 setup.py install --user --optimize=1
+	@echo
+	@echo "pass-$(PROG) is localy installed succesfully."
+	@echo "Warning, because it is a local installation, there is no manual page or shell completion."
 
 tests:
 	make -C tests
