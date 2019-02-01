@@ -24,7 +24,7 @@ import hashlib
 import argparse
 from subprocess import Popen, PIPE
 
-__version__ = '0.1'
+__version__ = '1.0'
 
 
 class PasswordStoreError(Exception):

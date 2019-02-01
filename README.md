@@ -113,9 +113,9 @@ sudo make install  # For OSX: make install PREFIX=/usr/local
 
 **Stable version**
 ```sh
-wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz
-tar xzf pass-audit-0.1.tar.gz
-cd pass-audit-0.1
+wget https://github.com/roddhjav/pass-audit/releases/download/v1.0/pass-audit-1.0.tar.gz
+tar xzf pass-audit-1.0.tar.gz
+cd pass-audit-1.0
 make
 sudo make install  # For OSX: make install PREFIX=/usr/local
 ```
@@ -123,9 +123,9 @@ sudo make install  # For OSX: make install PREFIX=/usr/local
 [Releases][releases] and commits are signed using [`06A26D531D56C42D66805049C5469996F0DF68EC`][keys].
 You should check the key's fingerprint and verify the signature:
 ```sh
-wget https://github.com/roddhjav/pass-audit/releases/download/v0.1/pass-audit-0.1.tar.gz.asc
+wget https://github.com/roddhjav/pass-audit/releases/download/v1.0/pass-audit-1.0.tar.gz.asc
 gpg --recv-keys 06A26D531D56C42D66805049C5469996F0DF68EC
-gpg --verify pass-audit-0.1.tar.gz.asc
+gpg --verify pass-audit-1.0.tar.gz.asc
 ```
 
 **Local install**
