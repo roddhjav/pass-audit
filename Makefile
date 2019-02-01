@@ -19,7 +19,7 @@ all:
 install:
 	@install -v -d "$(DESTDIR)$(MANDIR)/man1"
 	@install -v -d "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/"
-	@install -v -d "$(DESTDIR)$(BASHCOMPDIR)"
+	@install -v -d "$(DESTDIR)$(BASHCOMPDIR)" "$(DESTDIR)$(ZSHCOMPDIR)"
 	@install -v -m 0755 "$(PROG).bash" "$(DESTDIR)$(SYSTEM_EXTENSION_DIR)/$(PROG).bash"
 	@install -v -m 0644 "pass-$(PROG).1" "$(DESTDIR)$(MANDIR)/man1/pass-$(PROG).1"
 	@install -v -m 0644 "completion/pass-$(PROG).bash" "$(DESTDIR)$(BASHCOMPDIR)/pass-$(PROG)"
