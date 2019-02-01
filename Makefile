@@ -47,13 +47,30 @@ local:
 	@echo "pass-$(PROG) is localy installed succesfully."
 	@echo "Warning, because it is a local installation, there is no manual page or shell completion."
 
+
+TESTS_OPTS ?= --verbose --immediate --chain-lint --root=/tmp/sharness
+T = $(sort $(wildcard tests/test_*.sh))
+
 tests:
-	make -C tests
+	@python3 setup.py green -vvv --run-coverage --termcolor --processes $(shell nproc)
+	@make tests_bash
+
+tests_bash: $(T)
+
+$(T):
+	@$@ $(TESTS_OPTS)
 
 lint:
-	shellcheck -s bash $(PROG).bash
+	@prospector --profile .prospector.yaml \
+		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
+		-t profile-validator -t pyflakes -t pylint -t pyroma -t vulture \
+		pass_$(PROG).py setup.py
+	@prospector --profile tests/.prospector.yaml \
+		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
+		-t profile-validator -t pyflakes -t pylint -t pyroma \
+		tests/*.py
 
 clean:
 	@rm -vrf tests/test-results/ tests/gnupg/random_seed
 
-.PHONY: install uninstall tests lint clean
+.PHONY: install uninstall local tests tests_bash $(T) lint clean
