@@ -103,6 +103,15 @@ decent anonymity; nevertheless, it is not an entirely secure solution.
 yay -S pass-audit  # or your preferred AUR install method
 ```
 
+**FreeBSD**
+```sh
+# install the binary package
+pkg install py36-pass-audit
+
+# or build it using the ports tree
+make -C /usr/ports/security/py-pass-audit install clean
+```
+
 **From git**
 ```sh
 git clone https://github.com/roddhjav/pass-audit/
