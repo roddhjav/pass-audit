@@ -81,7 +81,7 @@ try:
     from zxcvbn import zxcvbn
 except (ImportError, ModuleNotFoundError):  # pragma: no cover
     msg = Msg()
-    msg.die("""defusedxml is not present, you can install it with
+    msg.die("""Some modules are not present, you can install them with
      'sudo apt-get install python3-requests python3-zxcvbn', or
      'pip3 install requests zxcvbn'""")
 
