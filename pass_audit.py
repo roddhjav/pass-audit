@@ -307,8 +307,7 @@ def sanitychecks(arg, msg):
 def report(msg, data, breached, weak):
     """Print final report."""
     if not breached and not weak:
-        msg.success("None of the %s passwords tested are breached." % len(data))
-        msg.message("However, it does not mean they are strong.")
+        msg.success("None of the %s passwords tested are breached or weak." % len(data))
     else:
         msg.error("%d passwords tested and %d breached, %d weak passwords found."
                   % (len(data), len(breached), len(weak)))
