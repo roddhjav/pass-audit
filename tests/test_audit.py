@@ -22,11 +22,12 @@ from tests.commons import TestPass
 
 class TestPassAudit(TestPass):
     passwords_nb = 7
+    msg = pass_audit.Msg()
 
     def test_password_notpwned(self):
         """Testing: pass audit for password not breached with K-anonymity method."""
         data = self._getdata("Password/notpwned")
-        audit = pass_audit.PassAudit(data)
+        audit = pass_audit.PassAudit(data, self.msg)
         breached = audit.password()
         self.assertTrue(len(breached) == 0)
 
@@ -34,7 +35,7 @@ class TestPassAudit(TestPass):
         """Testing: pass audit for password breached with K-anonymity method."""
         ref_counts = [51259, 3, 114, 1352, 3645804, 78773, 396]
         data = self._getdata("Password/pwned")
-        audit = pass_audit.PassAudit(data)
+        audit = pass_audit.PassAudit(data, self.msg)
         breached = audit.password()
         self.assertTrue(len(breached) == self.passwords_nb)
         for path, password, count in breached:
