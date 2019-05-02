@@ -215,26 +215,27 @@ class PwnedAPI():
 
 class PassAudit():
 
-    def __init__(self, data):
+    def __init__(self, data, msg):
         self.data = data
+        self.msg = msg
 
     def password(self):
         """K-anonimity password breach detection on haveibeenpwned.com."""
         # Generate the list of hashes and prefixes to query.
+        self.msg.verbose("Checking for breached passwords [hibp]:")
         data = []
         prefixes = []
+        buckets = dict()
         for path, payload in self.data.items():
+            self.msg.verbose("[hibp] %s" % path)
             password = payload.split('\n')[0]
             phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()
             prefix = phash[0:5]
             data.append((path, payload, phash, prefix))
             if prefix not in prefixes:
                 prefixes.append(prefix)
-
-        # Query the server and collect the buckets
-        buckets = dict()
-        for prefix in prefixes:
-            buckets[prefix] = PwnedAPI.password_range(prefix)
+                # Query the server and collect the buckets
+                buckets[prefix] = PwnedAPI.password_range(prefix)
 
         # Compare the data and return the breached passwords.
         breached = []
@@ -248,8 +249,10 @@ class PassAudit():
 
     def zxcvbn(self):
         """Password strength estimaton usuing Dropbox' zxcvbn"""
+        self.msg.verbose("Checking for weak passwords [zxcvbn]:")
         breached = []
         for path, payload in self.data.items():
+            self.msg.verbose("[zxcvbn] %s" % path)
             payload_lines = payload.split('\n')
             password = payload_lines[0]
             user_input = []
@@ -307,8 +310,7 @@ def sanitychecks(arg, msg):
 def report(msg, data, breached, weak):
     """Print final report."""
     if not breached and not weak:
-        msg.success("None of the %s passwords tested are breached." % len(data))
-        msg.message("However, it does not mean they are strong.")
+        msg.success("None of the %s passwords tested are breached or weak." % len(data))
     else:
         msg.error("%d passwords tested and %d breached, %d weak passwords found."
                   % (len(data), len(breached), len(weak)))
@@ -321,21 +323,23 @@ def main(argv):
     (store, paths) = sanitychecks(arg, msg)
 
     # Read data from the password store.
+    msg.verbose("Reading password store [init]:")
     data = dict()
     for path in paths:
         try:
+            msg.verbose("[init] %s" % path)
             data[path] = store.show(path)
         except PasswordStoreError as e:
             msg.warning("Imposible to read %s from the password store: %s"
                         % (path, e))
 
     # Start the audit of the password store
-    audit = PassAudit(data)
+    audit = PassAudit(data, msg)
     breached = audit.password()
+    weak = audit.zxcvbn()
     for path, payload, count in breached:
         msg.warning("Password breached: %s from %s has been breached %s time(s)."
                     % (payload, path, count))
-    weak = audit.zxcvbn()
     for path, payload, details in weak:
         msg.warning("Weak password detected: %s from %s might be weak. %s"
                     % (payload, path, zxcvbn_parse(details)))
