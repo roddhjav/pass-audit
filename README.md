@@ -6,7 +6,7 @@
     <a href="https://gitlab.com/roddhjav/pass-audit/pipelines">
         <img src="https://gitlab.com/roddhjav/pass-audit/badges/master/pipeline.svg?style=flat-square"
              alt="Pipeline Status" /></a>
-    <a href="https://www.codacy.com/app/roddhjav/pass-audit">
+    <a href="https://roddhjav.gitlab.io/pass-audit/">
         <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square"
 	           alt="Code Coverage" /></a>
     <a href="https://www.codacy.com/app/roddhjav/pass-audit">

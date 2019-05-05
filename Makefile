@@ -53,6 +53,7 @@ T = $(sort $(wildcard tests/test_*.sh))
 
 tests:
 	@python3 setup.py green -vvv --run-coverage --termcolor --processes $(shell nproc)
+	@coverage html
 	@make tests_bash
 
 tests_bash: $(T)
