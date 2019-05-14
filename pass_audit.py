@@ -22,7 +22,7 @@ import glob
 import shutil
 import hashlib
 import argparse
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE  # nosec
 
 __version__ = '1.0.1'
 
@@ -131,7 +131,7 @@ class PasswordStore():
     def _call(self, command, data=None):
         """Call to a command."""
         process = Popen(command, universal_newlines=True, env=self.env,
-                        stdin=PIPE, stdout=PIPE, stderr=PIPE)  # nosec
+                        stdin=PIPE, stdout=PIPE, stderr=PIPE)
         (stdout, stderr) = process.communicate(data)
         res = process.wait()
         return res, stdout, stderr
@@ -229,7 +229,7 @@ class PassAudit():
         for path, payload in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
             password = payload.split('\n')[0]
-            phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()
+            phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()  # nosec
             prefix = phash[0:5]
             data.append((path, payload, phash, prefix))
             if prefix not in prefixes:
