@@ -329,9 +329,9 @@ def main(argv):
         try:
             msg.verbose("[init] %s" % path)
             data[path] = store.show(path)
-        except PasswordStoreError as e:
+        except PasswordStoreError as error:
             msg.warning("Imposible to read %s from the password store: %s"
-                        % (path, e))
+                        % (path, error))
 
     # Start the audit of the password store
     audit = PassAudit(data, msg)
