@@ -198,10 +198,12 @@ class PasswordStore():
 class PwnedAPI():
     """Simple wrapper for https://haveibeenpwned.com API."""
 
-    @staticmethod
-    def password_range(prefix):
-        url = 'https://api.pwnedpasswords.com/range/' + prefix
-        res = requests.get(url, verify=True)
+    def __init__(self):
+        self.headers = {'user-agent': 'pass-audit/%s' % __version__}
+
+    def password_range(self, prefix):
+        url = "https://api.pwnedpasswords.com/range/%s" % prefix
+        res = requests.get(url, headers=self.headers, verify=True)
         res.raise_for_status()
 
         hashes = []
@@ -225,6 +227,7 @@ class PassAudit():
         self.msg.verbose("Checking for breached passwords [hibp]:")
         data = []
         prefixes = []
+        api = PwnedAPI()
         buckets = dict()
         for path, payload in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
@@ -235,7 +238,7 @@ class PassAudit():
             if prefix not in prefixes:
                 prefixes.append(prefix)
                 # Query the server and collect the buckets
-                buckets[prefix] = PwnedAPI.password_range(prefix)
+                buckets[prefix] = api.password_range(prefix)
 
         # Compare the data and return the breached passwords.
         breached = []
