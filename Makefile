@@ -62,16 +62,19 @@ $(T):
 	@$@ $(TESTS_OPTS)
 
 lint:
-	@prospector --profile .prospector.yaml \
+	@prospector -X --profile .prospector.yaml --strictness veryhigh \
 		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
-		-t profile-validator -t pyflakes -t pylint -t pyroma -t vulture \
+		-t profile-validator -t pyflakes -t pyroma -t vulture \
 		pass_$(PROG).py setup.py
-	@prospector --profile tests/.prospector.yaml \
+	@prospector --profile tests/.prospector.yaml --strictness veryhigh \
 		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
-		-t profile-validator -t pyflakes -t pylint -t pyroma \
+		-t profile-validator -t pyflakes -t pyroma \
 		tests/*.py
+
+security:
+	@bandit *.py tests/*.py
 
 clean:
 	@rm -vrf tests/test-results/ tests/gnupg/random_seed
 
-.PHONY: install uninstall local tests tests_bash $(T) lint clean
+.PHONY: install uninstall local tests tests_bash $(T) lint security clean
