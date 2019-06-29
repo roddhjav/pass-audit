@@ -297,7 +297,8 @@ class PassAudit():
             self.msg.verbose("[zxcvbn] %s" % path)
             password = entry.get('password', '')
             user_input = list(entry.values()) + path.split(os.sep)
-            user_input.remove(password)
+            if password in user_input:
+                user_input.remove(password)
             results = zxcvbn(password, user_inputs=user_input)
             if results['score'] <= 2:
                 breached.append((path, password, results))
