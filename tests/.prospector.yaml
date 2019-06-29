@@ -13,3 +13,11 @@ pylint:
   disable:
     - protected-access  # Want to test all functions
     - relative-beyond-top-level
+
+pep8:
+  disable:
+   - N802
+
+pep257:
+  disable:
+    - D101

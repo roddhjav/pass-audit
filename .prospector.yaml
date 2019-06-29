@@ -21,7 +21,6 @@ pylint:
     min-public-methods: 2
     max-public-methods: 20
     max-module-lines: 1000
-    max-line-length: 99
 
 mypy:
   options:
@@ -32,22 +31,19 @@ pyroma:
   disable:
     - PYR06
 
-mccabe:
-  options:
-    max-complexity: 13
-
 pep8:
   disable:
+   - E123
    - W605
 
   options:
-    max-line-length: 99
     single-line-if-stmt: n
 
 pep257:
   disable:
-    - D000
+    - D100
     - D107
+    - D102
     - D104
     - D203
     - D204

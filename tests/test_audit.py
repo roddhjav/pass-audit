@@ -25,14 +25,14 @@ class TestPassAudit(TestPass):
     msg = pass_audit.Msg()
 
     def test_password_notpwned(self):
-        """Testing: pass audit for password not breached with K-anonymity method."""
+        """Testing: pass audit for password not breached with K-anonymity."""
         data = self._getdata("Password/notpwned")
         audit = pass_audit.PassAudit(data, self.msg)
         breached = audit.password()
         self.assertTrue(len(breached) == 0)
 
     def test_password_pwned(self):
-        """Testing: pass audit for password breached with K-anonymity method."""
+        """Testing: pass audit for password breached with K-anonymity."""
         ref_counts = [51259, 3, 114, 1352, 3645804, 78773, 396]
         data = self._getdata("Password/pwned")
         audit = pass_audit.PassAudit(data, self.msg)

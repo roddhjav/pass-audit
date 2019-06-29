@@ -22,7 +22,7 @@ import pass_audit
 
 
 class TestBase(unittest.TestCase):
-    tmp = "/tmp/pass-audit/python/"
+    tmp = "/tmp/pass-audit/python/"  # nosec
     gpgids = ['D4C78DB7920E1E27F5416B81CC9DB947CF90C77B', '']
     prefix = "tests/audit-store"
 
@@ -36,16 +36,16 @@ class TestPass(TestBase):
     """
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         # GPG Settings
         if 'GPG_AGENT_INFO' in os.environ:
             os.environ.pop('GPG_AGENT_INFO')
         os.environ['GNUPGHOME'] = os.path.join(os.getcwd(), 'tests/gnupg')
 
         # Set PASSWORD_STORE_DIR & declare a passwordstore object
-        os.environ['PASSWORD_STORE_DIR'] = self.prefix
-        self.store = pass_audit.PasswordStore()
-        os.makedirs(self.tmp, exist_ok=True)
+        os.environ['PASSWORD_STORE_DIR'] = cls.prefix
+        cls.store = pass_audit.PasswordStore()
+        os.makedirs(cls.tmp, exist_ok=True)
 
     def _passinit(self):
         with open(os.path.join(self.store.prefix, '.gpg-id'), 'w') as file:

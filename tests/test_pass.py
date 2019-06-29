@@ -47,7 +47,8 @@ class TestPassStoreCommon(TestPass):
 
     def test_environment_variables(self):
         """Testing: environment variables."""
-        self.assertEqual(self.store.env['PASSWORD_STORE_DIR'], os.environ['PASSWORD_STORE_DIR'])
+        self.assertEqual(self.store.env['PASSWORD_STORE_DIR'],
+                         os.environ['PASSWORD_STORE_DIR'])
         self.assertEqual(self.store.env['GNUPGHOME'], os.environ['GNUPGHOME'])
 
     def test_exist(self):
@@ -102,7 +103,7 @@ class TestPassStoreList(TestPass):
         self.assertEqual(self.store.list(), ref)
 
     def test_list_root(self):
-        """Testing: pass list path/"""
+        """Testing: pass list path/."""
         ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws',
                'Emails/dpbx@afoqwdr.tx', 'Emails/dpbx@klivak.xb']
         self.assertEqual(self.store.list('Emails'), ref)
@@ -112,5 +113,5 @@ class TestPassStoreList(TestPass):
     def test_show(self):
         """Testing: pass show password."""
         path = "Social/mastodon.social"
-        password = "D<INNeT?#?Bf4%`zA/4i!/'$T"
+        password = "D<INNeT?#?Bf4%`zA/4i!/'$T"  # nosec
         self.assertEqual(self.store.show(path).split('\n')[0], password)

@@ -20,12 +20,13 @@ import sys
 from io import StringIO
 from contextlib import contextmanager
 
-from .. import pass_audit
 from tests.commons import TestBase
+from .. import pass_audit
 
 
 @contextmanager
-def captured_output():
+def captured():
+    """Context manager to capture stdout."""
     new_out, new_err = StringIO(), StringIO()
     old_out, old_err = sys.stdout, sys.stderr
     try:
@@ -40,32 +41,33 @@ class TestMsg(TestBase):
     def setUp(self):
         self.msg = pass_audit.Msg(False, False)
 
-    def test_verbose(self):
-        """Testing: message verbose."""
-        with captured_output() as (out, err):
+    def test_verbose_simple(self):
+        """Testing: message verbose simple."""
+        with captured() as (out, err):
             self.msg.verbose('verbose message')
             message = out.getvalue().strip()
+        self.assertEqual(err.getvalue().strip(), '')
         self.assertEqual(message, '')
 
+    def test_verbose(self):
+        """Testing: message verbose."""
         msg = pass_audit.Msg(True, False)
-        with captured_output() as (out, err):
-            msg.verbose('verbose msg')
+        with captured() as (out, err):
+            msg.verbose('pass')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
-        self.assertEqual(message, '\x1b[1m\x1b[95m  .  \x1b[35mverbose msg\x1b[0m')
-        print(message)
+        self.assertEqual(message, '\x1b[1m\x1b[95m  .  \x1b[35mpass\x1b[0m')
 
     def test_message(self):
         """Testing: classic message message."""
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             self.msg.message('classic message')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
         self.assertEqual(message, '\x1b[1m  .  \x1b[0mclassic message')
-        print(message)
 
         msg = pass_audit.Msg(True, True)
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             msg.message('classic message')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
@@ -73,38 +75,38 @@ class TestMsg(TestBase):
 
     def test_success(self):
         """Testing: success message."""
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             self.msg.success('success message')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
-        self.assertEqual(message, '\x1b[1m\x1b[92m (*) \x1b[0m\x1b[32msuccess message\x1b[0m')
-        print(message)
+        self.assertEqual(message, ('\x1b[1m\x1b[92m (*) \x1b[0m\x1b[32m'
+                                   'success message\x1b[0m'))
 
     def test_warning(self):
         """Testing: warning message."""
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             self.msg.warning('warning message')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
-        self.assertEqual(message, '\x1b[1m\x1b[93m  w  \x1b[0m\x1b[33mwarning message\x1b[0m')
-        print(message)
+        self.assertEqual(message, ('\x1b[1m\x1b[93m  w  \x1b[0m\x1b[33m'
+                                   'warning message\x1b[0m'))
 
     def test_error(self):
         """Testing: error message."""
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             self.msg.error('error message')
             message = out.getvalue().strip()
         self.assertEqual(err.getvalue().strip(), '')
-        self.assertEqual(message, '\x1b[1m\x1b[91m [x] \x1b[0m\x1b[1mError: \x1b[0merror message')
-        print(message)
+        self.assertEqual(message, ('\x1b[1m\x1b[91m [x] \x1b[0m\x1b[1m'
+                                   'Error: \x1b[0merror message'))
 
     def test_die(self):
         """Testing: die message."""
-        with captured_output() as (out, err):
+        with captured() as (out, err):
             with self.assertRaises(SystemExit) as cm:
                 self.msg.die('critical error')
             message = out.getvalue().strip()
             self.assertEqual(cm.exception.code, 1)
         self.assertEqual(err.getvalue().strip(), '')
-        self.assertEqual(message, '\x1b[1m\x1b[91m [x] \x1b[0m\x1b[1mError: \x1b[0mcritical error')
-        print(message)
+        self.assertEqual(message, ('\x1b[1m\x1b[91m [x] \x1b[0m\x1b[1m'
+                                   'Error: \x1b[0mcritical error'))

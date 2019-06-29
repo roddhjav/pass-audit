@@ -50,28 +50,35 @@ class Msg():
             self.verb = False
 
     def verbose(self, msg=''):
+        """Verbose method."""
         if self.verb:
-            print("%s  .  %s%s%s" % (self.Bmagenta, self.magenta, msg, self.end))
+            print("%s  .  %s%s%s" % (self.Bmagenta, self.magenta, msg,
+                                     self.end))
 
     def message(self, msg=''):
+        """Message method."""
         if not self.quiet:
             print("%s  .  %s%s" % (self.Bold, self.end, msg))
 
     def success(self, msg=''):
+        """Success method."""
         if not self.quiet:
             print("%s (*) %s%s%s%s" % (self.Bgreen, self.end,
                                        self.green, msg, self.end))
 
     def warning(self, msg=''):
+        """Warning method."""
         if not self.quiet:
             print("%s  w  %s%s%s%s" % (self.Byellow, self.end,
                                        self.yellow, msg, self.end))
 
     def error(self, msg=''):
+        """Error method."""
         print("%s [x] %s%sError: %s%s" % (self.Bred, self.end,
                                           self.Bold, self.end, msg))
 
     def die(self, msg=''):
+        """Show an error and exit the program."""
         self.error(msg)
         exit(1)
 
@@ -80,17 +87,19 @@ try:
     import requests
     from zxcvbn import zxcvbn
 except (ImportError, ModuleNotFoundError):  # pragma: no cover
-    msg = Msg()
-    msg.die("""Some modules are not present, you can install them with
-     'sudo apt-get install python3-requests python3-zxcvbn', or
-     'pip3 install requests zxcvbn'""")
+    err = Msg()  # pylint: disable=invalid-name
+    err.die("Some modules are not present, you can install them with:\n"
+            "  'sudo apt-get install python3-requests python3-zxcvbn', or\n"
+            "  'pip3 install requests zxcvbn'")
 
 
 def zxcvbn_parse(details):
-    return ("Score %s (%s guesses). This estimate is based on the sequence %s" %
-        (details['score'], details['guesses'],
-        ' + '.join([x['token']+'('+x['pattern']+')' for x in details['sequence']])
-        ))
+    """Nicely print the results from zxcvbn."""
+    sequence = ''
+    for seq in details.get('sequence', []):
+        sequence += "%s(%s) " % (seq['token'], seq['pattern'])
+    res = "Score %s (%s guesses). " % (details['score'], details['guesses'])
+    return res + "This estimate is based on the sequence %s" % sequence
 
 
 class PasswordStore():
@@ -160,7 +169,7 @@ class PasswordStore():
             for file in glob.glob(pattern, recursive=True):
                 if not file[0] == '.':
                     file = os.path.splitext(file)[0]
-                    file = file[len(self.prefix)+1:]
+                    file = file[len(self.prefix) + 1:]
                     paths.append(file)
         paths.sort()
         return paths
@@ -202,6 +211,7 @@ class PwnedAPI():
         self.headers = {'user-agent': 'pass-audit/%s' % __version__}
 
     def password_range(self, prefix):
+        """Query the haveibeenpwned api to retrieve the bucket ``prefix``."""
         url = "https://api.pwnedpasswords.com/range/%s" % prefix
         res = requests.get(url, headers=self.headers, verify=True)
         res.raise_for_status()
@@ -216,6 +226,7 @@ class PwnedAPI():
 
 
 class PassAudit():
+    """Pass audit main class."""
 
     def __init__(self, data, msg):
         self.data = data
@@ -231,13 +242,12 @@ class PassAudit():
         buckets = dict()
         for path, payload in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
-            password = payload.split('\n')[0]
-            phash = hashlib.sha1(password.encode("utf8")).hexdigest().upper()  # nosec
+            password = payload.split('\n')[0].encode("utf8")
+            phash = hashlib.sha1(password).hexdigest().upper()  # nosec
             prefix = phash[0:5]
             data.append((path, payload, phash, prefix))
             if prefix not in prefixes:
                 prefixes.append(prefix)
-                # Query the server and collect the buckets
                 buckets[prefix] = api.password_range(prefix)
 
         # Compare the data and return the breached passwords.
@@ -251,7 +261,7 @@ class PassAudit():
         return breached
 
     def zxcvbn(self):
-        """Password strength estimaton usuing Dropbox' zxcvbn"""
+        """Password strength estimaton usuing Dropbox' zxcvbn."""
         self.msg.verbose("Checking for weak passwords [zxcvbn]:")
         breached = []
         for path, payload in self.data.items():
@@ -264,7 +274,8 @@ class PassAudit():
                 split_line = line.split(':', 1)
                 if len(split_line) > 1:
                     user_input += split_line[1].split()
-            results = zxcvbn(password, user_inputs=user_input + path.split("/"))
+            results = zxcvbn(password,
+                             user_inputs=user_input + path.split(os.sep))
             if results['score'] <= 2:
                 breached.append((path, password, results))
         return breached
@@ -276,15 +287,15 @@ def argumentsparse(argv):
   A pass extension for auditing your password repository. It supports safe
   breached password detection from haveibeenpwned.com using K-anonymity method
   and password strength estimaton usuing zxcvbn.""",
-    usage="%(prog)s [-h] [-V] pass-names",
-    formatter_class=argparse.RawDescriptionHelpFormatter,
+    formatter_class=argparse.RawDescriptionHelpFormatter,  # noqa
     epilog="More information may be found in the pass-audit(1) man page.")
 
     parser.add_argument('paths', type=str, nargs='?', metavar='pass-names',
                         default='', help="""Path(s) to audit in the password
                         store, If empty audit the full store.""")
     parser.add_argument('-q', '--quiet', action='store_true', help='Be quiet.')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Be verbose.')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Be verbose.')
     parser.add_argument('-V', '--version', action='version',
                         version='%(prog)s ' + __version__,
                         help='Show the program version and exit.')
@@ -313,14 +324,16 @@ def sanitychecks(arg, msg):
 def report(msg, data, breached, weak):
     """Print final report."""
     if not breached and not weak:
-        msg.success("None of the %s passwords tested are breached or weak." % len(data))
+        msg.success("None of the %s passwords tested are breached or weak."
+                    % len(data))
     else:
-        msg.error("%d passwords tested and %d breached, %d weak passwords found."
-                  % (len(data), len(breached), len(weak)))
+        msg.error("%d passwords tested and %d breached, %d weak "
+                  "passwords found." % (len(data), len(breached), len(weak)))
         msg.message("You should update them with 'pass update'.")
 
 
 def main(argv):
+    """pass-audit main function."""
     arg = argumentsparse(argv)
     msg = Msg(arg.verbose, arg.quiet)
     (store, paths) = sanitychecks(arg, msg)
@@ -341,8 +354,8 @@ def main(argv):
     breached = audit.password()
     weak = audit.zxcvbn()
     for path, payload, count in breached:
-        msg.warning("Password breached: %s from %s has been breached %s time(s)."
-                    % (payload, path, count))
+        msg.warning("Password breached: %s from %s has"
+                    " been breached %s time(s)." % (payload, path, count))
     for path, payload, details in weak:
         msg.warning("Weak password detected: %s from %s might be weak. %s"
                     % (payload, path, zxcvbn_parse(details)))
