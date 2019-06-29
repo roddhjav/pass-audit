@@ -346,6 +346,13 @@ def sanitychecks(arg, msg):
 
 def report(msg, data, breached, weak):
     """Print final report."""
+    for path, payload, count in breached:
+        msg.warning("Password breached: %s from %s has"
+                    " been breached %s time(s)." % (payload, path, count))
+    for path, payload, details in weak:
+        msg.warning("Weak password detected: %s from %s might be weak. %s"
+                    % (payload, path, zxcvbn_parse(details)))
+
     if not breached and not weak:
         msg.success("None of the %s passwords tested are breached or weak."
                     % len(data))
@@ -376,12 +383,6 @@ def main(argv):
     audit = PassAudit(data, msg)
     breached = audit.password()
     weak = audit.zxcvbn()
-    for path, payload, count in breached:
-        msg.warning("Password breached: %s from %s has"
-                    " been breached %s time(s)." % (payload, path, count))
-    for path, payload, details in weak:
-        msg.warning("Weak password detected: %s from %s might be weak. %s"
-                    % (payload, path, zxcvbn_parse(details)))
 
     # Report!
     report(msg, data, breached, weak)
