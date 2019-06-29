@@ -273,6 +273,8 @@ class PassAudit():
         for path, entry in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
             password = entry.get('password', '').encode("utf8")
+            if password == '':
+                continue
             phash = hashlib.sha1(password).hexdigest().upper()  # nosec
             prefix = phash[0:5]
             data.append((path, entry, phash, prefix))
@@ -296,6 +298,8 @@ class PassAudit():
         for path, entry in self.data.items():
             self.msg.verbose("[zxcvbn] %s" % path)
             password = entry.get('password', '')
+            if password == '':
+                continue
             user_input = list(entry.values()) + path.split(os.sep)
             if password in user_input:
                 user_input.remove(password)
