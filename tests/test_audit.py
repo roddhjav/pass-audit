@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from .. import pass_audit
+import pass_audit
 from tests.commons import TestPass
 
 
@@ -40,6 +40,6 @@ class TestPassAudit(TestPass):
         self.assertTrue(len(breached) == self.passwords_nb)
         for path, password, count in breached:
             self.assertIn(path, data)
-            self.assertTrue(data[path].split('\n')[0] == password)
+            self.assertTrue(data[path]['password'] == password)
             ref_index = int(path[-1:]) - 1
             self.assertTrue(ref_counts[ref_index] == count)

@@ -270,42 +270,35 @@ class PassAudit():
         prefixes = []
         api = PwnedAPI()
         buckets = dict()
-        for path, payload in self.data.items():
+        for path, entry in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
-            password = payload.split('\n')[0].encode("utf8")
+            password = entry.get('password', '').encode("utf8")
             phash = hashlib.sha1(password).hexdigest().upper()  # nosec
             prefix = phash[0:5]
-            data.append((path, payload, phash, prefix))
+            data.append((path, entry, phash, prefix))
             if prefix not in prefixes:
                 prefixes.append(prefix)
                 buckets[prefix] = api.password_range(prefix)
 
         # Compare the data and return the breached passwords.
         breached = []
-        for path, payload, phash, prefix in data:
-            password = payload.split('\n')[0]
+        for path, entry, phash, prefix in data:
             if phash in buckets[prefix][0]:
                 index = buckets[prefix][0].index(phash)
                 count = buckets[prefix][1][index]
-                breached.append((path, password, count))
+                breached.append((path, entry.get('password', ''), count))
         return breached
 
     def zxcvbn(self):
         """Password strength estimaton usuing Dropbox' zxcvbn."""
         self.msg.verbose("Checking for weak passwords [zxcvbn]:")
         breached = []
-        for path, payload in self.data.items():
+        for path, entry in self.data.items():
             self.msg.verbose("[zxcvbn] %s" % path)
-            payload_lines = payload.split('\n')
-            password = payload_lines[0]
-            user_input = []
-            for line in payload_lines[1:]:
-                # extract "login:", "url:", etc.
-                split_line = line.split(':', 1)
-                if len(split_line) > 1:
-                    user_input += split_line[1].split()
-            results = zxcvbn(password,
-                             user_inputs=user_input + path.split(os.sep))
+            password = entry.get('password', '')
+            user_input = list(entry.values()) + path.split(os.sep)
+            user_input.remove(password)
+            results = zxcvbn(password, user_inputs=user_input)
             if results['score'] <= 2:
                 breached.append((path, password, results))
         return breached
