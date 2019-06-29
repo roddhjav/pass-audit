@@ -18,10 +18,10 @@
 
 import os
 import sys
-import glob
 import shutil
 import hashlib
 import argparse
+from pathlib import Path
 from subprocess import Popen, PIPE  # nosec
 
 __version__ = '1.0.1'
@@ -103,10 +103,14 @@ def zxcvbn_parse(details):
 
 
 class PasswordStore():
-    """Simple Password Store for python, only able to show password.
-    Supports all the environment variables.
+    """Simple Password Store wrapper for python.
+
+    Based on the PasswordStore class from pass-import.
+    See https://github.com/roddhjav/pass-import for more information.
+
     """
-    def __init__(self):
+
+    def __init__(self, prefix=None):
         self._passbinary = shutil.which('pass')
         self._gpgbinary = shutil.which('gpg2') or shutil.which('gpg')
         self.env = dict(**os.environ)
@@ -117,7 +121,7 @@ class PasswordStore():
         self._setenv('PASSWORD_STORE_X_SELECTION', 'X_SELECTION')
         self._setenv('PASSWORD_STORE_CLIP_TIME', 'CLIP_TIME')
         self._setenv('PASSWORD_STORE_UMASK')
-        self._setenv('PASSWORD_STORE_GENERATED_LENGHT', 'GENERATED_LENGTH')
+        self._setenv('PASSWORD_STORE_GENERATED_LENGTH', 'GENERATED_LENGTH')
         self._setenv('PASSWORD_STORE_CHARACTER_SET', 'CHARACTER_SET')
         self._setenv('PASSWORD_STORE_CHARACTER_SET_NO_SYMBOLS',
                      'CHARACTER_SET_NO_SYMBOLS')
@@ -126,9 +130,10 @@ class PasswordStore():
         self._setenv('PASSWORD_STORE_SIGNING_KEY')
         self._setenv('GNUPGHOME')
 
+        if prefix:
+            self.prefix = prefix
         if 'PASSWORD_STORE_DIR' not in self.env:
             raise PasswordStoreError("pass prefix unknown")
-        self.prefix = self.env['PASSWORD_STORE_DIR']
 
     def _setenv(self, var, env=None):
         """Add var in the environment variables dictionary."""
@@ -139,11 +144,11 @@ class PasswordStore():
 
     def _call(self, command, data=None):
         """Call to a command."""
-        process = Popen(command, universal_newlines=True, env=self.env,
-                        stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        (stdout, stderr) = process.communicate(data)
-        res = process.wait()
-        return res, stdout, stderr
+        with Popen(command, universal_newlines=True, env=self.env, stdin=PIPE,
+                   stdout=PIPE, stderr=PIPE, shell=False) as process:
+            (stdout, stderr) = process.communicate(data)
+            res = process.wait()
+            return res, stdout, stderr
 
     def _pass(self, arg=None, data=None):
         """Call to password store."""
@@ -156,30 +161,56 @@ class PasswordStore():
             raise PasswordStoreError("%s %s" % (stderr, stdout))
         return stdout
 
+    @property
+    def prefix(self):
+        """Get password store prefix from PASSWORD_STORE_DIR."""
+        return self.env['PASSWORD_STORE_DIR']
+
+    @prefix.setter
+    def prefix(self, value):
+        self.env['PASSWORD_STORE_DIR'] = value
+
     def list(self, path=''):
-        """Return a list of paths in a store."""
+        """List the paths in the password store repository."""
         prefix = os.path.join(self.prefix, path)
         if os.path.isfile(prefix + '.gpg'):
             paths = [path]
         else:
             paths = []
-            pattern = self.prefix + '/**/*.gpg'
-            if path:
-                pattern = prefix + '*/**/*.gpg'
-            for file in glob.glob(pattern, recursive=True):
-                if not file[0] == '.':
-                    file = os.path.splitext(file)[0]
-                    file = file[len(self.prefix) + 1:]
+            for ppath in Path(prefix).rglob('*.gpg'):
+                file = os.sep + str(ppath)[len(self.prefix) + 1:]
+                if "%s." % os.sep not in file:
+                    file = os.path.splitext(file)[0][1:]
                     paths.append(file)
         paths.sort()
         return paths
 
     def show(self, path):
-        """Decrypt path and read the password from the password file."""
-        return self._pass(['show', path])
+        """Decrypt path and read the credentials in the password file."""
+        entry = dict()
+        entry['group'] = os.path.dirname(path)
+        entry['title'] = os.path.basename(path)
+        data = self._pass(['show', path]).split('\n')
+        data.pop()
+        if data:
+            line = data.pop(0)
+            if ': ' in line:
+                (key, value) = line.split(': ', 1)
+                entry[key] = value
+            else:
+                entry['password'] = line
+        for line in data:
+            if ': ' in line:
+                (key, value) = line.split(': ', 1)
+                entry[key] = value
+            elif line.startswith('otpauth://'):
+                entry['otpauth'] = line
+            elif 'comments' in entry:
+                entry['comments'] += '\n' + line
+        return entry
 
     def exist(self):
-        """Return True if the password store is initialized."""
+        """Check if the password store is initialized."""
         return os.path.isfile(os.path.join(self.prefix, '.gpg-id'))
 
     def is_valid_recipients(self):
@@ -188,15 +219,14 @@ class PasswordStore():
             gpgids = file.read().split('\n')
             gpgids.pop()
 
-        # All the public gpgids must be present in the keyring.
-        cmd = [self._gpgbinary, '--list-keys']
+        cmd = [self._gpgbinary, '--with-colons', '--batch', '--list-keys']
         for gpgid in gpgids:
             res, _, _ = self._call(cmd + [gpgid])
             if res:
                 return False
 
-        # At least one private key must be present in the keyring.
-        cmd = [self._gpgbinary, '--list-secret-keys']
+        cmd = [self._gpgbinary, '--with-colons', '--batch',
+               '--list-secret-keys']
         for gpgid in gpgids:
             res, _, _ = self._call(cmd + [gpgid])
             if res == 0:

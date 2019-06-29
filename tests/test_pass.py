@@ -19,7 +19,7 @@
 import os
 import shutil
 
-from .. import pass_audit
+import pass_audit
 from tests.commons import TestPass
 
 
@@ -50,6 +50,14 @@ class TestPassStoreCommon(TestPass):
         self.assertEqual(self.store.env['PASSWORD_STORE_DIR'],
                          os.environ['PASSWORD_STORE_DIR'])
         self.assertEqual(self.store.env['GNUPGHOME'], os.environ['GNUPGHOME'])
+
+    def test_prefix(self):
+        """Testing: prefix get/set."""
+        prefix = 'tests/pass-store'
+        store = pass_audit.PasswordStore(prefix)
+        self.assertEqual(prefix, store.prefix)
+        store.prefix = self.store.prefix
+        self.assertEqual(store.env['PASSWORD_STORE_DIR'], self.store.prefix)
 
     def test_exist(self):
         """Testing: store not initialized."""
@@ -85,6 +93,11 @@ class TestPassStoreCommon(TestPass):
 class TestPassStoreList(TestPass):
     prefix = "tests/pass-store"
 
+    def setUp(self):
+        # Use the password store in tests/pass-store
+        os.environ['PASSWORD_STORE_DIR'] = self.prefix
+        self.store = pass_audit.PasswordStore()
+
     def test_list_path(self):
         """Testing: pass list exact path."""
         path = 'Social/mastodon.social'
@@ -99,7 +112,7 @@ class TestPassStoreList(TestPass):
                'Emails/WS/dpbx@mnyfymt.ws', 'Emails/dpbx@afoqwdr.tx',
                'Emails/dpbx@klivak.xb', 'Servers/ovh.com', 'Servers/ovh.com0',
                'Social/mastodon.social', 'Social/news.ycombinator.com',
-               'Social/twitter.com']
+               'Social/twitter.com', 'tombpass']
         self.assertEqual(self.store.list(), ref)
 
     def test_list_root(self):
@@ -111,7 +124,34 @@ class TestPassStoreList(TestPass):
         self.assertEqual(self.store.list('Emails/WS'), ref)
 
     def test_show(self):
-        """Testing: pass show password."""
+        """Testing: pass show Social/mastodon.social."""
         path = "Social/mastodon.social"
-        password = "D<INNeT?#?Bf4%`zA/4i!/'$T"  # nosec
-        self.assertEqual(self.store.show(path).split('\n')[0], password)
+        entry = {'group': 'Social',
+                 'login': 'ostqxi',
+                 'otpauth': ('otpauth://totp/mastodon.social:ostqxi?secret='
+                             'JBSWY3DPEHPK3PXP'),
+                 'password': "D<INNeT?#?Bf4%`zA/4i!/'$T",
+                 'title': 'mastodon.social',
+                 'url': 'mastodon.social/'}
+        self.assertEqual(self.store.show(path), entry)
+
+    def test_show_emptypassword(self):
+        """Testing: pass show 'CornerCases/empty password'."""
+        path = "CornerCases/empty password"
+        entry = {'group': 'CornerCases',
+                 'login': 'vkeelpbu',
+                 'title': 'empty password',
+                 'url': 'nhysdo.wg'}
+        self.assertEqual(self.store.show(path), entry)
+
+    def test_show_notes(self):
+        """Testing: pass show 'CornerCases/empty password'."""
+        path = "CornerCases/note"
+        entry = {'group': 'CornerCases',
+                 'title': 'note',
+                 'comments': ('This is a multiline note entry. Cube shank petr'
+                              'oleum guacamole dart mower\nacutely slashing up'
+                              'per cringing lunchbox tapioca wrongful unbeaten'
+                              ' sift.')}
+
+        self.assertEqual(self.store.show(path), entry)
