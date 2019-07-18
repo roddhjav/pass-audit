@@ -90,10 +90,9 @@ decent anonymity; nevertheless, it is not an entirely secure solution.
 
 **Requirements**
 * `pass 1.7.0` or greater.
-* `python3` (python 3.5 and 3.6 are supported)
-* `python3-requests`
-  - Debian/Ubuntu: `sudo apt-get install python3-requests`
-  - OSX: `pip3 install requests`
+* Python 3.4+
+* `python3-setuptools` to build and install it.
+* `python3-requests` (`apt install python3-requests` or `pip3 install requests`)
 * `python3-zxcvbn` (`pip3 install zxcvbn`)
 
 **ArchLinux**
@@ -155,7 +154,7 @@ Feedback, contributors, pull requests are all very welcome.
 
 ## License
 
-    Copyright (C) 2018  Alexandre PUJOL and Contributors
+    Copyright (C) 2018-2019  Alexandre PUJOL and Contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
