@@ -267,19 +267,17 @@ class PassAudit():
         # Generate the list of hashes and prefixes to query.
         self.msg.verbose("Checking for breached passwords [hibp]:")
         data = []
-        prefixes = []
         api = PwnedAPI()
         buckets = dict()
         for path, entry in self.data.items():
             self.msg.verbose("[hibp] %s" % path)
-            password = entry.get('password', '').encode("utf8")
-            if password == '':
+            if 'password' not in entry:
                 continue
+            password = entry['password'].encode("utf8")
             phash = hashlib.sha1(password).hexdigest().upper()  # nosec
             prefix = phash[0:5]
             data.append((path, entry, phash, prefix))
-            if prefix not in prefixes:
-                prefixes.append(prefix)
+            if prefix not in buckets:
                 buckets[prefix] = api.password_range(prefix)
 
         # Compare the data and return the breached passwords.
@@ -297,9 +295,9 @@ class PassAudit():
         breached = []
         for path, entry in self.data.items():
             self.msg.verbose("[zxcvbn] %s" % path)
-            password = entry.get('password', '')
-            if password == '':
+            if 'password' not in entry:
                 continue
+            password = entry['password']
             user_input = list(entry.values()) + path.split(os.sep)
             if password in user_input:
                 user_input.remove(password)
