@@ -31,6 +31,6 @@ class TestPwnedAPI(TestPass):
         phash = '21BD12DC183F740EE76F27B78EB39C8AD972A757'
         hashes, counts = self.api.password_range(prefix)
         self.assertIn(phash, hashes)
-        self.assertTrue(counts[hashes.index(phash)] == 51259)
+        self.assertTrue(counts[hashes.index(phash)] == 52579)
         self.assertTrue(len(hashes) == len(counts))
-        self.assertTrue(len(hashes) == 527)
+        self.assertTrue(len(hashes) == 528)
