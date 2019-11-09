@@ -1,25 +1,12 @@
-<h1 align="center">pass audit</h1>
-<p align="center">
-    <a href="https://travis-ci.org/roddhjav/pass-audit">
-        <img src="https://img.shields.io/travis/roddhjav/pass-audit/master.svg?style=flat-square"
-             alt="Build Status"></a>
-    <a href="https://gitlab.com/roddhjav/pass-audit/pipelines">
-        <img src="https://gitlab.com/roddhjav/pass-audit/badges/master/pipeline.svg?style=flat-square"
-             alt="Pipeline Status" /></a>
-    <a href="https://roddhjav.gitlab.io/pass-audit/">
-        <img src="https://img.shields.io/codacy/coverage/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square"
-	           alt="Code Coverage" /></a>
-    <a href="https://www.codacy.com/app/roddhjav/pass-audit">
-        <img src="https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square"
-             alt="Code Quality"></a>
-    <a href="https://github.com/roddhjav/pass-audit/releases/latest">
-        <img src="https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600&style=flat-square"
-             alt="Last Release" /></a>
-</p>
-<p align="center">
-    A <a href="https://www.passwordstore.org/">pass</a> extension for auditing
-    your password repository.
-</p>
+[<img src="https://gitlab.com/uploads/-/system/project/avatar/6507456/logo.png" align="right" height="110"/>][github-link]
+
+# pass audit
+
+[![][travis]][travis-link] [![][gitlab]][gitlab-link] [![][coverage]][coverage-link] [![][quality]][quality-link] [![
+][release]][release-link]
+
+**A [pass] extension for auditing your password repository.**
+
 
 ## Description
 `pass audit` is a password-store extension for auditing your password repository.
@@ -169,6 +156,19 @@ Feedback, contributors, pull requests are all very welcome.
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+[github-link]: https://github.com/roddhjav/pass-audit
+[travis]: https://img.shields.io/travis/roddhjav/pass-audit/master.svg?style=flat-square
+[travis-link]: https://travis-ci.org/roddhjav/pass-audit
+[gitlab]: https://gitlab.com/roddhjav/pass-audit/badges/master/pipeline.svg?style=flat-square
+[gitlab-link]: https://gitlab.com/roddhjav/pass-audit/pipelines
+[coverage]: https://gitlab.com/roddhjav/pass-audit/badges/master/coverage.svg?style=flat-square
+[coverage-link]: https://roddhjav.gitlab.io/pass-audit/
+[quality]: https://img.shields.io/codacy/grade/593851adcd354d179bf5b5b43eac0440/master.svg?style=flat-square
+[quality-link]: https://www.codacy.com/app/roddhjav/pass-audit
+[release]: https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600&style=flat-square
+[release-link]: https://github.com/roddhjav/pass-audit/releases/latest
+
+[pass]: https://www.passwordstore.org/
 [keys]: https://pujol.io/keys
 [aur]: https://aur.archlinux.org/packages/pass-audit
 [releases]: https://github.com/roddhjav/pass-audit/releases
