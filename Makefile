@@ -11,7 +11,7 @@ ZSHCOMPDIR ?= $(PREFIX)/share/zsh/site-functions
 all:
 	@python3 setup.py build
 	@echo
-	@echo "pass-$(PROG) was built succesfully. You can now install it wit \"make install\""
+	@echo "pass-$(PROG) was built successfully. You can now install it with \"make install\""
 	@echo
 	@echo "To run pass $(PROG) one needs to have some tools installed on the system:"
 	@echo "     password-store, python3, python3-requests and python3-zxcvbn"
@@ -63,12 +63,12 @@ $(T):
 
 lint:
 	@prospector -X --profile .prospector.yaml --strictness veryhigh \
-		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
-		-t profile-validator -t pyflakes -t pyroma -t vulture \
+		-t dodgy -t mccabe -t pep257 -t pep8 \
+		-t profile-validator -t pyroma -t vulture \
 		pass_$(PROG).py setup.py
 	@prospector --profile tests/.prospector.yaml --strictness veryhigh \
-		-t dodgy -t frosted -t mccabe -t mypy -t pep257 -t pep8 \
-		-t profile-validator -t pyflakes -t pyroma \
+		-t dodgy -t mccabe -t pep257 -t pep8 \
+		-t profile-validator -t pyroma \
 		tests/*.py
 
 security:
