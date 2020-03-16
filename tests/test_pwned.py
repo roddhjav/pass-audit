@@ -17,7 +17,8 @@
 #
 
 from .. import pass_audit
-from tests.commons import TestPass
+from tests.commons import TestPass, mock_request
+from unittest import mock
 
 
 class TestPwnedAPI(TestPass):
@@ -25,6 +26,7 @@ class TestPwnedAPI(TestPass):
     def setUp(self):
         self.api = pass_audit.PwnedAPI()
 
+    @mock.patch('requests.get', mock_request)
     def test_password_range(self):
         """Testing: https://api.haveibeenpwned.com/range API."""
         prefix = '21BD1'
@@ -33,4 +35,4 @@ class TestPwnedAPI(TestPass):
         self.assertIn(phash, hashes)
         self.assertTrue(counts[hashes.index(phash)] == 52579)
         self.assertTrue(len(hashes) == len(counts))
-        self.assertTrue(len(hashes) == 528)
+        self.assertTrue(len(hashes) == 11)

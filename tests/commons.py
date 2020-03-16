@@ -56,3 +56,28 @@ class TestPass(TestBase):
         for path in self.store.list(root):
             data[path] = self.store.show(path)
         return data
+
+
+def mock_request(*args, **kwargs):
+    class MockResponse:
+        def __init__(self):
+            data = [
+                "D5EE0CB1A41071812CCED2F1930E6E1A5D2:2",
+                "2DC183F740EE76F27B78EB39C8AD972A757:52579",
+                "CF164D7A51A1FD864B1BF9E1CE8A3EC171B:4",
+                "D0B910E7A3028703C0B30039795E908CEB2:7",
+                "AD6438836DBE526AA231ABDE2D0EEF74D42:3",
+                "EBAB0A7CE978E0194608B572E4F9404AA21:3",
+                "17727EAB0E800E62A776C76381DEFBC4145:120",
+                "5370372AC65308F03F6ED75EC6068C8E1BE:1386",
+                "1E4C9B93F3F0682250B6CF8331B7EE68FD8:3730471",
+                "437FAA5A7FCE15D1DDCB9EAEAEA377667B8:123422",
+                "944C22589AC652B0F47918D58CA0CDCCB63:411"
+            ]
+
+            self.text = "\r\n".join(data)
+
+        def raise_for_status(self):
+            pass
+
+    return MockResponse()

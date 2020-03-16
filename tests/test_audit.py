@@ -17,13 +17,15 @@
 #
 
 import pass_audit
-from tests.commons import TestPass
+from tests.commons import TestPass, mock_request
+from unittest import mock
 
 
 class TestPassAudit(TestPass):
     passwords_nb = 7
     msg = pass_audit.Msg()
 
+    @mock.patch('requests.get', mock_request)
     def test_password_notpwned(self):
         """Testing: pass audit for password not breached with K-anonymity."""
         data = self._getdata("Password/notpwned")
@@ -31,6 +33,7 @@ class TestPassAudit(TestPass):
         breached = audit.password()
         self.assertTrue(len(breached) == 0)
 
+    @mock.patch('requests.get', mock_request)
     def test_password_pwned(self):
         """Testing: pass audit for password breached with K-anonymity."""
         ref_counts = [52579, 3, 120, 1386, 3730471, 123422, 411]

@@ -19,7 +19,8 @@
 import os
 
 from .. import pass_audit
-from tests.commons import TestPass
+from tests.commons import TestPass, mock_request
+from unittest import mock
 
 
 class TestPassAuditCMD(TestPass):
@@ -47,6 +48,7 @@ class TestPassAuditCMD(TestPass):
         cmd = ['--not-an-option', '-q']
         self._passaudit(cmd, 2)
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_StoreNotInitialized(self):
         """Testing: store not initialized."""
         cmd = ['Password/', '-v']
@@ -56,6 +58,7 @@ class TestPassAuditCMD(TestPass):
         os.rename(os.path.join(self.store.prefix, 'backup.gpg-id'),
                   os.path.join(self.store.prefix, '.gpg-id'))
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_InvalidID(self):
         """Testing: invalid user ID."""
         os.rename(os.path.join(self.store.prefix, '.gpg-id'),
@@ -66,26 +69,31 @@ class TestPassAuditCMD(TestPass):
         os.rename(os.path.join(self.store.prefix, 'backup.gpg-id'),
                   os.path.join(self.store.prefix, '.gpg-id'))
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_NotAFile(self):
         """Testing: pass audit not_a_file."""
         cmd = ['not_a_file']
         self._passaudit(cmd, 1)
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_passwords_notpwned(self):
         """Testing: pass audit Password/notpwned."""
         cmd = ['Password/notpwned']
         self._passaudit(cmd)
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_passwords_pwned(self):
         """Testing: pass audit Password/pwned."""
         cmd = ['Password/pwned']
         self._passaudit(cmd)
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_passwords_good(self):
         """Testing: pass audit Password/good."""
         cmd = ['Password/good']
         self._passaudit(cmd)
 
+    @mock.patch('requests.get', mock_request)
     def test_pass_audit_passwords_all(self):
         """Testing: pass audit ."""
         cmd = ['']
