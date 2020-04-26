@@ -88,6 +88,18 @@ decent anonymity; nevertheless, it is not an entirely secure solution.
 yay -S pass-audit  # or your preferred AUR install method
 ```
 
+**Debian/Ubuntu**
+
+`pass-audit` is available under my own debian repository with the package name
+`pass-extension-audit`. Both the repository and the package are signed with
+my GPG key: [`06A26D531D56C42D66805049C5469996F0DF68EC`][keys].
+```sh
+wget -qO - https://pkg.pujol.io/debian/gpgkey | sudo apt-key add -
+sudo echo 'deb https://pkg.pujol.io/debian/repo all main' > /etc/apt/sources.list.d/pkg.pujol.io.list
+sudo apt-get update
+sudo apt-get install pass-extension-audit
+```
+
 **FreeBSD**
 ```sh
 # install the binary package
