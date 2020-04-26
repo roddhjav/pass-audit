@@ -21,21 +21,20 @@ using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 ## Usage
 
 ```
-usage: pass audit [-h] [-V] pass-names
+usage: pass import [-h] [-V] [-v | -q] [pass-names]
 
-  A pass extension for auditing your password repository. It supports safe
-  breached password detection from haveibeenpwned.com using K-anonymity method
-  and password strength estimaton usuing zxcvbn.
+ A pass extension for auditing your password repository. It supports safe
+ breached password detection from haveibeenpwned.com using K-anonymity method
+ and password strength estimaton using zxcvbn.
 
 positional arguments:
-  pass-names     Path(s) to audit in the password store, If empty audit the
-                 full store.
+  pass-names     Path(s) to audit in the password store, If empty audit the full store.
 
 optional arguments:
   -h, --help     show this help message and exit
-  -q, --quiet    Be quiet.
-  -v, --verbose  Be verbose.
   -V, --version  Show the program version and exit.
+  -v, --verbose  Set verbosity level, can be used more than once.
+  -q, --quiet    Be quiet.
 
 More information may be found in the pass-audit(1) man page.
 ```
@@ -158,7 +157,7 @@ Feedback, contributors, pull requests are all very welcome.
 
 [github-link]: https://github.com/roddhjav/pass-audit
 [travis]: https://img.shields.io/travis/roddhjav/pass-audit/master.svg?style=flat-square
-[travis-link]: https://travis-ci.org/roddhjav/pass-audit
+[travis-link]: https://travis-ci.com/roddhjav/pass-audit
 [gitlab]: https://gitlab.com/roddhjav/pass-audit/badges/master/pipeline.svg?style=flat-square
 [gitlab-link]: https://gitlab.com/roddhjav/pass-audit/pipelines
 [coverage]: https://gitlab.com/roddhjav/pass-audit/badges/master/coverage.svg?style=flat-square
