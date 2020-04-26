@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ cmd_audit() {
 	export CHARACTER_SET CHARACTER_SET_NO_SYMBOLS EXTENSIONS PASSWORD_STORE_KEY
 	export PASSWORD_STORE_ENABLE_EXTENSIONS PASSWORD_STORE_SIGNING_KEY
 	export GNUPGHOME PYTHONIOENCODING="UTF-8"
-	/usr/bin/env python3 -m pass_audit "$@"
+	python3 -m pass_audit "$@"
 	return $?
 }
 
