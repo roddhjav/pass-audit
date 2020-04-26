@@ -12,7 +12,7 @@ bash:
   stage: lint
   image: koalaman/shellcheck-alpine
   script:
-    - shellcheck --shell=bash audit.bash tests/commons.sh
+    - shellcheck --shell=bash audit.bash
 
 python:
   stage: lint
