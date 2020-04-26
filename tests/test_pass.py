@@ -1,110 +1,91 @@
-#!/usr/bin/env python3
-# pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -*- encoding: utf-8 -*-
+# pass-audit - test suite
+# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
 #
 
 import os
-import shutil
 
-import pass_audit
-from tests.commons import TestPass
+from pass_audit.passwordstore import PasswordStore, PasswordStoreError
+import tests
 
 
-class TestPassStoreCommon(TestPass):
+class TestExportPassGeneral(tests.Test):
+    """Test pass general features."""
 
     def setUp(self):
-        # The test name is the test method name after 'test_'
-        testname = self.id().split('.').pop()[len('test_'):]
+        """Create a directory for a new password store repository."""
+        self._tmpdir()
+        os.environ['PASSWORD_STORE_DIR'] = self.prefix
+        self.store = PasswordStore(self.prefix)
+        self.store.all = True
 
-        # Set PASSWORD_STORE_DIR & declare a passwordstore object
-        prefix = os.path.join(self.tmp, testname)
-        os.environ['PASSWORD_STORE_DIR'] = prefix
-        self.store = pass_audit.PasswordStore()
-
-        # Re-initialize the test directory
-        if os.path.isdir(prefix):
-            shutil.rmtree(prefix, ignore_errors=True)
-        os.makedirs(prefix, exist_ok=True)
-
-    def test_environment_no_prefix(self):
+    def test_pass_environment_no_prefix(self):
         """Testing: no prefix."""
         os.environ.pop('PASSWORD_STORE_DIR', None)
-        with self.assertRaises(pass_audit.PasswordStoreError):
-            pass_audit.PasswordStore()
+        with self.assertRaises(PasswordStoreError):
+            PasswordStore()
 
-    def test_environment_variables(self):
+    def test_pass_environment_variables(self):
         """Testing: environment variables."""
         self.assertEqual(self.store.env['PASSWORD_STORE_DIR'],
                          os.environ['PASSWORD_STORE_DIR'])
         self.assertEqual(self.store.env['GNUPGHOME'], os.environ['GNUPGHOME'])
 
-    def test_prefix(self):
+    def test_pass_prefix(self):
         """Testing: prefix get/set."""
-        prefix = 'tests/pass-store'
-        store = pass_audit.PasswordStore(prefix)
+        prefix = tests.assets + 'pass-store'
+        store = PasswordStore(prefix)
         self.assertEqual(prefix, store.prefix)
         store.prefix = self.store.prefix
         self.assertEqual(store.env['PASSWORD_STORE_DIR'], self.store.prefix)
 
-    def test_exist(self):
+    def test_pass_exist(self):
         """Testing: store not initialized."""
         self.assertFalse(self.store.exist())
-        with self.assertRaises(pass_audit.PasswordStoreError):
-            self.store._pass(['insert', '--multiline', 'Test/test'], 'dummy')
-        self._passinit()
+        with self.assertRaises(PasswordStoreError):
+            self.store._command(['insert', '--multiline', 'Test/test'], 'dummy')
+        self._init_pass()
         self.assertTrue(self.store.exist())
 
-    def test_valid_recipients(self):
-        """Testing: valid recipients."""
+    def test_pass_valid_credentials(self):
+        """Testing: valid credentials."""
         self.gpgids = ['D4C78DB7920E1E27F5416B81CC9DB947CF90C77B',
                        '70BD448330ACF0653645B8F2B4DDBFF0D774A374',
                        '62EBE74BE834C2EC71E6414595C4B715EB7D54A8', '']
-        self._passinit()
-        self.assertTrue(self.store.is_valid_recipients())
+        self._init_pass()
+        self.assertTrue(self.store.isvalid())
 
-    def test_invalid_recipients(self):
-        """Testing: invalid recipients."""
+    def test_pass_invalid_credentials(self):
+        """Testing: invalid credentials."""
         self.gpgids = ['D4C78DB7920E1E27F5416B81CC9DB947CF90C77B',
                        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
                        '62EBE74BE834C2EC71E6414595C4B715EB7D54A8', '']
-        self._passinit()
-        self.assertFalse(self.store.is_valid_recipients())
+        self._init_pass()
+        self.assertFalse(self.store.isvalid())
 
-    def test_empty_recipients(self):
-        """Testing: empty recipients."""
+    def test_pass_empty_credentials(self):
+        """Testing: empty credentials."""
         self.gpgids = ['']
-        self._passinit()
-        self.assertFalse(self.store.is_valid_recipients())
+        self._init_pass()
+        self.assertFalse(self.store.isvalid())
 
 
-class TestPassStoreList(TestPass):
-    prefix = "tests/pass-store"
+class TestExportPassShow(tests.Test):
+    """Test pass list/show features."""
 
     def setUp(self):
-        # Use the password store in tests/pass-store
-        os.environ['PASSWORD_STORE_DIR'] = self.prefix
-        self.store = pass_audit.PasswordStore()
+        """Use the password repository in tests/assets/pass-store."""
+        prefix = tests.assets + 'pass-store'
+        os.environ['PASSWORD_STORE_DIR'] = prefix
+        self.store = PasswordStore(prefix)
 
-    def test_list_path(self):
+    def test_pass_list_path(self):
         """Testing: pass list exact path."""
         path = 'Social/mastodon.social'
         ref = ['Social/mastodon.social']
         self.assertEqual(self.store.list(path), ref)
 
-    def test_list(self):
+    def test_pass_list(self):
         """Testing: pass list."""
         ref = ['Bank/aib', 'CornerCases/empty entry',
                'CornerCases/empty password', 'CornerCases/note',
@@ -115,7 +96,7 @@ class TestPassStoreList(TestPass):
                'Social/twitter.com', 'tombpass']
         self.assertEqual(self.store.list(), ref)
 
-    def test_list_root(self):
+    def test_pass_list_root(self):
         """Testing: pass list path/."""
         ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws',
                'Emails/dpbx@afoqwdr.tx', 'Emails/dpbx@klivak.xb']
@@ -123,7 +104,7 @@ class TestPassStoreList(TestPass):
         ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
         self.assertEqual(self.store.list('Emails/WS'), ref)
 
-    def test_show(self):
+    def test_pass_show(self):
         """Testing: pass show Social/mastodon.social."""
         path = "Social/mastodon.social"
         entry = {'group': 'Social',
@@ -135,7 +116,7 @@ class TestPassStoreList(TestPass):
                  'url': 'mastodon.social/'}
         self.assertEqual(self.store.show(path), entry)
 
-    def test_show_emptypassword(self):
+    def test_pass_show_emptypassword(self):
         """Testing: pass show 'CornerCases/empty password'."""
         path = "CornerCases/empty password"
         entry = {'group': 'CornerCases',
@@ -144,7 +125,7 @@ class TestPassStoreList(TestPass):
                  'url': 'nhysdo.wg'}
         self.assertEqual(self.store.show(path), entry)
 
-    def test_show_notes(self):
+    def test_pass_show_notes(self):
         """Testing: pass show 'CornerCases/empty password'."""
         path = "CornerCases/note"
         entry = {'group': 'CornerCases',

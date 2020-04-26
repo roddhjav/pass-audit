@@ -1,44 +1,37 @@
-#!/usr/bin/env python3
-# pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018-2019 Alexandre PUJOL <alexandre@pujol.io>.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -*- encoding: utf-8 -*-
+# pass-audit - test suite
+# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
 #
 
-import pass_audit
-from tests.commons import TestPass, mock_request
 from unittest import mock
 
+import pass_audit.audit
+import pass_audit.msg
+import tests
 
-class TestPassAudit(TestPass):
+
+class TestPassAudit(tests.Test):
+    """Test the PassAudit class."""
     passwords_nb = 7
-    msg = pass_audit.Msg()
 
-    @mock.patch('requests.get', mock_request)
+    @classmethod
+    def setUpClass(cls):
+        cls.msg = pass_audit.msg.Msg()
+
+    @mock.patch('requests.get', tests.mock_request)
     def test_password_notpwned(self):
         """Testing: pass audit for password not breached with K-anonymity."""
-        data = self._getdata("Password/notpwned")
-        audit = pass_audit.PassAudit(data, self.msg)
+        data = tests.getdata('Password/notpwned')
+        audit = pass_audit.audit.PassAudit(data, self.msg)
         breached = audit.password()
         self.assertTrue(len(breached) == 0)
 
-    @mock.patch('requests.get', mock_request)
+    @mock.patch('requests.get', tests.mock_request)
     def test_password_pwned(self):
         """Testing: pass audit for password breached with K-anonymity."""
         ref_counts = [52579, 3, 120, 1386, 3730471, 123422, 411]
-        data = self._getdata("Password/pwned")
-        audit = pass_audit.PassAudit(data, self.msg)
+        data = tests.getdata('Password/pwned')
+        audit = pass_audit.audit.PassAudit(data, self.msg)
         breached = audit.password()
         self.assertTrue(len(breached) == self.passwords_nb)
         for path, password, count in breached:
