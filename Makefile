@@ -48,33 +48,32 @@ local:
 	@echo "Warning, because it is a local installation, there is no manual page or shell completion."
 
 
-TESTS_OPTS ?= --verbose --immediate --chain-lint --root=/tmp/sharness
-T = $(sort $(wildcard tests/test_*.sh))
-
 tests:
-	@python3 setup.py green -vvv --run-coverage --termcolor --processes $(shell nproc)
+	@python3 -m green -vvv --run-coverage --termcolor --processes $(shell nproc)
 	@coverage html
-	@make tests_bash
-
-tests_bash: $(T)
-
-$(T):
-	@$@ $(TESTS_OPTS)
 
 lint:
-	@prospector -X --profile .prospector.yaml --strictness veryhigh \
-		-t dodgy -t mccabe -t pep257 -t pep8 \
-		-t profile-validator -t pyroma -t vulture \
-		pass_$(PROG).py setup.py
-	@prospector --profile tests/.prospector.yaml --strictness veryhigh \
-		-t dodgy -t mccabe -t pep257 -t pep8 \
-		-t profile-validator -t pyroma \
-		tests/*.py
+	@prospector --profile .prospector.yaml --strictness veryhigh \
+		-t dodgy -t mccabe -t pep257 -t pep8 -t pylint \
+		-t profile-validator -t pyflakes -t pyroma \
+		pass_audit/
+	@prospector --profile .prospector.yaml --strictness veryhigh \
+		-t dodgy -t mccabe -t pep257 -t pep8 -t pylint \
+		-t profile-validator -t pyflakes -t pyroma \
+		setup.py
+	@prospector --profile .prospector.yaml  --strictness veryhigh \
+		-t dodgy -t mccabe -t mypy -t pep257 -t pep8 -t pylint \
+		-t profile-validator -t pyflakes -t pyroma \
+		tests/
 
 security:
-	@bandit *.py tests/*.py
+	@bandit -r pass_audit tests setup.py
 
 clean:
-	@rm -vrf tests/test-results/ tests/gnupg/random_seed
+	@rm -rf .coverage .mypy_cache .pybuild .ropeproject build \
+		debian/.debhelper debian/debhelper* debian/pass-extension-import* \
+		dist *.egg-info htmlcov */__pycache__/ __pycache__ \
+		session.baseline.sqlite session.sqlite \
+		tests/gnupg/random_seed tests/test-results/
 
 .PHONY: install uninstall local tests tests_bash $(T) lint security clean

@@ -1,7 +1,10 @@
 [paths]
-source = pass_audit.py
+source = pass_audit
 
 [report]
 exclude_lines =
     pragma: no cover
+    except ImportError
+    if not ZXCVBN
+    if 'password' not in entry
     if __name__ == .__main__.:
