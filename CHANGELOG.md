@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keep-changelog].
 
+## [1.1] - 2020-04-26
+### Added
+* Added Debian packaging
+
+### Changed
+* Import the structure from pass-import into pass-audit
+* pass-audit will run even if zxcvbn is not present
+
 ## [1.0.1] - 2019-02-01
 ### Fixed
 * Fixed makefile
