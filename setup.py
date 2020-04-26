@@ -1,39 +1,39 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# pass audit - Password Store Extension (https://www.passwordstore.org/)
+# Copyright (C) 2017-2020 Alexandre PUJOL <alexandre@pujol.io>.
 
+import os
 from setuptools import setup
-from pass_audit import __version__
 
-__url__ = 'https://github.com/roddhjav/pass-audit'
+about = dict()
+with open(os.path.join('pass_audit', '__init__.py')) as file:
+    exec(file.read(), about)  # nosec pylint: disable=exec-used
+
+with open('README.md') as file:
+    long_description = file.read()
+
 
 setup(
-    name="pass-audit",
-    version=__version__,
-    author="Alexandre Pujol",
-    author_email="alexandre@pujol.io",
-    url=__url__,
-    download_url="%s/releases/download/v%s/pass-audit-%s.tar.gz" % (
-                 __url__, __version__, __version__),
-    description="A pass extension for auditing your password repository.",
-    license='GPL3',
-
-    py_modules=['pass_audit'],
-
+    name=about['__title__'],
+    version=about['__version__'],
+    author=about['__author__'],
+    author_email=about['__email__'],
+    description=about['__summary__'],
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    license=about['__license__'],
+    url=about['__uri__'],
+    packages=['pass_audit'],
     install_requires=[
         'requests',
         'zxcvbn'
-        ],
-    tests_require=[
-        'green'
-        ],
-    test_suite='tests',
+    ],
     python_requires='>=3.5',
     zip_safe=True,
-
     keywords=[
         'password-store', 'password', 'pass', 'pass-extension',
         'audit', 'password-audit', 'haveibeenpwned',
-        ],
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -49,5 +49,5 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Topic :: Security :: Cryptography',
-        ],
+    ],
 )
