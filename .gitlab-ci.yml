@@ -5,8 +5,32 @@ include:
 
 stages:
   - lint
-  - test
+  - tests
   - deploy
+
+variables:
+  PASS_VERSION: 1.7.3
+
+
+# Dependencies definitions
+# ------------------------
+
+.script: &script
+  stage: tests
+  script:
+    - pip3 install green coverage requests zxcvbn
+    - make tests
+
+.only: &only
+  only:
+   - tags
+   - web
+
+
+# Jobs definitions
+# ----------------
+
+# Code Linter
 
 bash:
   stage: lint
@@ -25,26 +49,17 @@ python:
 sast:
   stage: lint
 
-.script: &script
-  stage: test
-  script:
-    - pip3 install green coverage requests zxcvbn
-    - make tests
-
-.only: &only
-  only:
-   - tags
-   - web
+# Code tests
 
 archlinux:
   image: archlinux/base
   before_script:
     - pacman -Syu --noconfirm --noprogressbar make python-pip which grep pass
+  <<: *script
   artifacts:
-    expire_in: 2 days
+    expire_in: 1 day
     paths:
       - htmlcov/
-  <<: *script
 
 ubuntu:
   image: ubuntu
@@ -57,9 +72,9 @@ debian:
   image: debian
   before_script:
     - apt-get update -q && apt-get install -y make pass python3-pip grep wget
-    - wget https://git.zx2c4.com/password-store/snapshot/password-store-1.7.3.tar.xz
-    - tar -xf password-store-1.7.3.tar.xz
-    - make --directory=password-store-1.7.3 install
+    - wget https://git.zx2c4.com/password-store/snapshot/password-store-$PASS_VERSION.tar.xz
+    - tar -xf password-store-$PASS_VERSION.tar.xz
+    - make --directory=password-store-$PASS_VERSION install
   <<: *script
   <<: *only
 
@@ -70,6 +85,8 @@ fedora:
   <<: *script
   <<: *only
 
+# Code coverage deployment
+
 pages:
   stage: deploy
   dependencies:
@@ -77,7 +94,7 @@ pages:
   script:
     - mv htmlcov/ public/
   artifacts:
-    expire_in: 2 days
+    expire_in: 1 day
     paths:
       - public
   only:
