@@ -39,3 +39,18 @@ class TestPassAudit(tests.Test):
             self.assertTrue(data[path]['password'] == password)
             ref_index = int(path[-1:]) - 1
             self.assertTrue(ref_counts[ref_index] == count)
+
+    def test_zxcvbn_weak(self):
+        """Testing: pass audit for weak password with zxcvbn."""
+        data = tests.getdata('Password/pwned/1')
+        audit = pass_audit.audit.PassAudit(data, self.msg)
+        weak = audit.zxcvbn()
+        self.assertTrue(len(weak) == 1)
+        self.assertTrue(weak[0][2]['score'] == 0)
+
+    def test_zxcvbn_strong(self):
+        """Testing: pass audit for strong password with zxcvbn."""
+        data = tests.getdata('Password/good')
+        audit = pass_audit.audit.PassAudit(data, self.msg)
+        weak = audit.zxcvbn()
+        self.assertTrue(len(weak) == 0)
