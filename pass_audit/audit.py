@@ -52,7 +52,7 @@ class PassAudit():
         buckets = dict()
         for path, entry in self.data.items():
             self.msg.verbose("Getting the prefix of %s" % path)
-            if 'password' not in entry:
+            if entry.get('password', '') == '':
                 continue
             password = entry['password'].encode("utf8")
             phash = hashlib.sha1(password).hexdigest().upper()  # nosec
@@ -79,7 +79,7 @@ class PassAudit():
         weak = []
         for path, entry in self.data.items():
             self.msg.verbose("Checking %s" % path)
-            if 'password' not in entry:
+            if entry.get('password', '') == '':
                 continue
             password = entry['password']
             user_input = list(entry.values()) + path.split(os.sep)

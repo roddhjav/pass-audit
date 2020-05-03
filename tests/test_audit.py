@@ -54,3 +54,12 @@ class TestPassAudit(tests.Test):
         audit = pass_audit.audit.PassAudit(data, self.msg)
         weak = audit.zxcvbn()
         self.assertTrue(len(weak) == 0)
+
+    def test_empty(self):
+        """Testing: pass audit for empty password."""
+        data = {'empty': {'password': ''}}
+        audit = pass_audit.audit.PassAudit(data, self.msg)
+        weak = audit.zxcvbn()
+        breached = audit.password()
+        self.assertTrue(len(weak) == 0)
+        self.assertTrue(len(breached) == 0)
