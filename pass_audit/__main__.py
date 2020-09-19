@@ -37,7 +37,7 @@ class ArgParser(ArgumentParser):
         epilog = "More information may be found in the pass-audit(1) man page."
 
         super(ArgParser,
-              self).__init__(prog='pass import',
+              self).__init__(prog='pass audit',
                              description=description,
                              formatter_class=RawDescriptionHelpFormatter,
                              epilog=epilog)

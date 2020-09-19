@@ -71,7 +71,7 @@ security:
 
 clean:
 	@rm -rf .coverage .mypy_cache .pybuild .ropeproject build \
-		debian/.debhelper debian/debhelper* debian/pass-extension-import* \
+		debian/.debhelper debian/debhelper* debian/pass-extension-audit* \
 		dist *.egg-info htmlcov */__pycache__/ __pycache__ \
 		session.baseline.sqlite session.sqlite \
 		tests/gnupg/random_seed tests/test-results/

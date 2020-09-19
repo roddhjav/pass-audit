@@ -21,7 +21,7 @@ using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 ## Usage
 
 ```
-usage: pass import [-h] [-V] [-v | -q] [pass-names]
+usage: pass audit [-h] [-V] [-v | -q] [pass-names]
 
  A pass extension for auditing your password repository. It supports safe
  breached password detection from haveibeenpwned.com using K-anonymity method
