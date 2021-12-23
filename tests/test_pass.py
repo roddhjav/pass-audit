@@ -104,6 +104,15 @@ class TestExportPassShow(tests.Test):
         ref = ['Emails/WS/dpbx@fner.ws', 'Emails/WS/dpbx@mnyfymt.ws']
         self.assertEqual(self.store.list('Emails/WS'), ref)
 
+    def test_pass_list_limit_filename(self):
+        """Testing: pass list **/<filename>"""
+        prefix = tests.assets + 'audit-store'
+        store = PasswordStore(prefix)
+        ref = ['Password/good/1', 'Password/notpwned/1', 'Password/pwned/1']
+        self.assertEqual(store.list(filename='1'), ref)
+        ref = ['dummy']
+        self.assertEqual(store.list(filename='dummy'), ref)
+
     def test_pass_show(self):
         """Testing: pass show Social/mastodon.social."""
         path = "Social/mastodon.social"
