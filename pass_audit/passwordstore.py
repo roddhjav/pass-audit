@@ -88,7 +88,7 @@ class PasswordStore():
             paths = [path]
         else:
             paths = []
-            for ppath in Path(prefix).rglob('{}.gpg'.format(filename)):
+            for ppath in Path(prefix).rglob(f'{filename}.gpg'):
                 file = os.sep + str(ppath)[len(self.prefix) + 1:]
                 if f"{os.sep}." not in file:
                     file = os.path.splitext(file)[0][1:]
