@@ -20,11 +20,11 @@ class PwnedAPI():
     """Simple wrapper for https://haveibeenpwned.com API."""
 
     def __init__(self):
-        self.headers = {'user-agent': 'pass-audit/%s' % __version__}
+        self.headers = {'user-agent': f"pass-audit/{__version__}"}
 
     def password_range(self, prefix):
         """Query the haveibeenpwned api to retrieve the bucket ``prefix``."""
-        url = "https://api.pwnedpasswords.com/range/%s" % prefix
+        url = f"https://api.pwnedpasswords.com/range/{prefix}"
         res = requests.get(url, headers=self.headers, verify=True)
         res.raise_for_status()
 
@@ -49,9 +49,9 @@ class PassAudit():
         # Generate the list of hashes and prefixes to query.
         data = []
         api = PwnedAPI()
-        buckets = dict()
+        buckets = {}
         for path, entry in self.data.items():
-            self.msg.verbose("Getting the prefix of %s" % path)
+            self.msg.verbose(f"Getting the prefix of {path}")
             if entry.get('password', '') == '':
                 continue
             password = entry['password'].encode("utf8")
@@ -78,7 +78,7 @@ class PassAudit():
 
         weak = []
         for path, entry in self.data.items():
-            self.msg.verbose("Checking %s" % path)
+            self.msg.verbose(f"Checking {path}")
             if entry.get('password', '') == '':
                 continue
             password = entry['password']

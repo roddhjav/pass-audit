@@ -69,7 +69,7 @@ class PasswordStore():
         command.extend(arg)
         res, stdout, stderr = self._call(command, data, nline)
         if res:
-            raise PasswordStoreError("%s %s" % (stderr, stdout))
+            raise PasswordStoreError(f"{stderr} {stdout}")
         return stdout
 
     @property
@@ -90,7 +90,7 @@ class PasswordStore():
             paths = []
             for ppath in Path(prefix).rglob('*.gpg'):
                 file = os.sep + str(ppath)[len(self.prefix) + 1:]
-                if "%s." % os.sep not in file:
+                if f"{os.sep}." not in file:
                     file = os.path.splitext(file)[0][1:]
                     paths.append(file)
         paths.sort()
@@ -98,7 +98,7 @@ class PasswordStore():
 
     def show(self, path):
         """Decrypt path and read the credentials in the password file."""
-        entry = dict()
+        entry = {}
         entry['group'] = os.path.dirname(path)
         entry['title'] = os.path.basename(path)
         try:

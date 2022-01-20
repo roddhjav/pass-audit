@@ -36,11 +36,10 @@ class ArgParser(ArgumentParser):
  and password strength estimaton using zxcvbn."""
         epilog = "More information may be found in the pass-audit(1) man page."
 
-        super(ArgParser,
-              self).__init__(prog='pass audit',
-                             description=description,
-                             formatter_class=RawDescriptionHelpFormatter,
-                             epilog=epilog)
+        super().__init__(prog='pass audit',
+                         description=description,
+                         formatter_class=RawDescriptionHelpFormatter,
+                         epilog=epilog)
         self.add_arguments()
 
     def add_arguments(self):
@@ -77,7 +76,7 @@ def setup():
 
     paths = store.list(arg.paths)
     if not paths:
-        msg.die("%s is not in the password store." % arg.paths)
+        msg.die(f"{arg.paths} is not in the password store.")
 
     return msg, store, paths
 
@@ -85,14 +84,14 @@ def setup():
 def pass_read(msg, store, paths):
     """Read data from the password store."""
     msg.verbose("Reading the password store")
-    data = dict()
+    data = {}
     for path in paths:
         try:
-            msg.verbose("Reading %s" % path)
+            msg.verbose(f"Reading {path}")
             data[path] = store.show(path)
         except PasswordStoreError as error:
-            msg.warning("Imposible to read %s from the password store: %s"
-                        % (path, error))
+            msg.warning(
+                f"Imposible to read {path} from the password store: {error}")
     return data
 
 
@@ -113,26 +112,26 @@ def zxcvbn_parse(details):
     """Nicely print the results from zxcvbn."""
     sequence = ''
     for seq in details.get('sequence', []):
-        sequence += "%s(%s) " % (seq['token'], seq['pattern'])
-    res = "Score %s (%s guesses). " % (details['score'], details['guesses'])
-    return res + "This estimate is based on the sequence %s" % sequence
+        sequence += f"{seq['token']}({seq['pattern']}) "
+    res = f"Score {details['score']} ({details['guesses']} guesses). "
+    return res + f"This estimate is based on the sequence {sequence}"
 
 
 def report(msg, data, breached, weak):
     """Print final report."""
     for path, payload, count in breached:
-        msg.warning("Password breached: %s from %s has"
-                    " been breached %s time(s)." % (payload, path, count))
+        msg.warning(f"Password breached: {payload} from {path} has"
+                    f" been breached {count} time(s).")
     for path, payload, details in weak:
-        msg.warning("Weak password detected: %s from %s might be weak. %s"
-                    % (payload, path, zxcvbn_parse(details)))
+        msg.warning(f"Weak password detected: {payload} from {path}"
+                    f" might be weak. {zxcvbn_parse(details)}")
 
     if not breached and not weak:
-        msg.success("None of the %s passwords tested are breached or weak."
-                    % len(data))
+        msg.success(
+            f"None of the {len(data)} passwords tested are breached or weak.")
     else:
-        msg.error("%d passwords tested and %d breached, %d weak "
-                  "passwords found." % (len(data), len(breached), len(weak)))
+        msg.error(f"{len(data)} passwords tested and {len(breached)} breached,"
+                  f" {len(weak)} weak passwords found.")
         msg.message("You should update them with 'pass update'.")
 
 

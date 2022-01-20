@@ -58,7 +58,7 @@ def captured():
 
 def getdata(root):
     """Get data from the reference repository."""
-    data = dict()
+    data = {}
     store = PasswordStore(prefix)
     for path in store.list(root):
         data[path] = store.show(path)

@@ -5,7 +5,7 @@
 import os
 from setuptools import setup
 
-about = dict()
+about = {}
 with open(os.path.join('pass_audit', '__init__.py')) as file:
     exec(file.read(), about)  # nosec pylint: disable=exec-used
 
