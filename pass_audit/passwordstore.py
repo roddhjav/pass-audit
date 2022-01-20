@@ -81,14 +81,14 @@ class PasswordStore():
     def prefix(self, value):
         self.env['PASSWORD_STORE_DIR'] = value
 
-    def list(self, path=''):
+    def list(self, path='', filename='*'):
         """List the paths in the password store repository."""
         prefix = os.path.join(self.prefix, path)
         if os.path.isfile(prefix + '.gpg'):
             paths = [path]
         else:
             paths = []
-            for ppath in Path(prefix).rglob('*.gpg'):
+            for ppath in Path(prefix).rglob('{}.gpg'.format(filename)):
                 file = os.sep + str(ppath)[len(self.prefix) + 1:]
                 if f"{os.sep}." not in file:
                     file = os.path.splitext(file)[0][1:]

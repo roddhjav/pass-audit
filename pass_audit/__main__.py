@@ -51,6 +51,7 @@ class ArgParser(ArgumentParser):
         self.add_argument('-V', '--version', action='version',
                           version='%(prog)s ' + __version__,
                           help='Show the program version and exit.')
+        self.add_argument('-f', '--filename', type=str, default="*", help="""Check only passwords with this filename""")
         group = self.add_mutually_exclusive_group()
         group.add_argument('-v', '--verbose', action='count', default=0,
                            help='Set verbosity level, '
@@ -74,7 +75,7 @@ def setup():
     if not store.isvalid():
         msg.die('invalid user ID, password access aborted.')
 
-    paths = store.list(arg.paths)
+    paths = store.list(arg.paths, arg.filename)
     if not paths:
         msg.die(f"{arg.paths} is not in the password store.")
 
