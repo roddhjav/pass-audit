@@ -10,7 +10,7 @@ __all__ = [
 ]
 
 __title__ = 'pass-audit'
-__summary__ = ('A pass extension for auditing your password repository.')
+__summary__ = 'A pass extension for auditing your password repository.'
 __uri__ = 'https://github.com/roddhjav/pass-audit'
 
 __version__ = '1.1'
