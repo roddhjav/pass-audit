@@ -8,9 +8,6 @@ from pathlib import Path
 
 from setuptools import setup
 
-with open('README.md') as file:
-    long_description = file.read()
-
 share = Path(sys.prefix, 'share')
 base = '/usr'
 if os.uname().sysname == 'Darwin':
