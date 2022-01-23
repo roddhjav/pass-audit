@@ -120,7 +120,7 @@ fedora:
   image: fedora
   extends: .distribution
   before_script:
-    - dnf -y install --setopt=install_weak_deps=False make gpg pass python3-pip grep which
+    - dnf -y install --setopt=install_weak_deps=False make gpg pass python-setuptools python3-pip grep which 
 
 # Code coverage deployment
 
