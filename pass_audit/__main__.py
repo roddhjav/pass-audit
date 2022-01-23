@@ -17,6 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import sys
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
@@ -41,6 +42,8 @@ class ArgParser(ArgumentParser):
                          formatter_class=RawDescriptionHelpFormatter,
                          epilog=epilog)
         self.add_arguments()
+        self.passwordstore = bool(
+            os.environ.get('_PASSWORD_STORE_EXTENSION', '') == 'audit')
 
     def add_arguments(self):
         """Set arguments."""
@@ -66,6 +69,9 @@ def setup():
     parser = ArgParser()
     arg = parser.parse_args(sys.argv)
     msg = Msg(arg.verbose, arg.quiet)
+
+    if not parser.passwordstore:
+        msg.die("not running inside password-store.")
 
     if arg.paths == '':
         msg.message("Auditing whole store - this may take some time")

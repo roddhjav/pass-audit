@@ -18,6 +18,7 @@ class TestMain(tests.Test):
         cls.prefix = tests.prefix
         cls.store = PasswordStore(tests.prefix)
         os.environ['PASSWORD_STORE_DIR'] = tests.prefix
+        os.environ['_PASSWORD_STORE_EXTENSION'] = 'audit'  # nosec
 
     def test_main_help(self):
         """Testing: pass audit --help."""
@@ -56,6 +57,12 @@ class TestMain(tests.Test):
 
         os.rename(os.path.join(self.store.prefix, 'backup.gpg-id'),
                   os.path.join(self.store.prefix, '.gpg-id'))
+
+    def test_main_not_inside_pass(self):
+        """Testing: python3 -m audit."""
+        os.environ.pop('_PASSWORD_STORE_EXTENSION')
+        self.main([''], 1, 'not running inside password-store.')
+        os.environ['_PASSWORD_STORE_EXTENSION'] = 'audit'  # nosec
 
     def test_main_not_a_file(self):
         """Testing: pass audit not_a_file."""
