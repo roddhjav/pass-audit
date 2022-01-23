@@ -3,51 +3,41 @@
 # Copyright (C) 2017-2020 Alexandre PUJOL <alexandre@pujol.io>.
 
 import os
-from setuptools import setup
+import sys
+from pathlib import Path
 
-about = {}
-with open(os.path.join('pass_audit', '__init__.py')) as file:
-    exec(file.read(), about)  # nosec pylint: disable=exec-used
+from setuptools import setup
 
 with open('README.md') as file:
     long_description = file.read()
 
+share = Path(sys.prefix, 'share')
+base = '/usr'
+if os.uname().sysname == 'Darwin':
+    base = '/usr/local'
+lib = Path(base, 'lib', 'password-store', 'extensions')
+
+if '--user' in sys.argv:
+    if 'PASSWORD_STORE_EXTENSIONS_DIR' in os.environ:
+        lib = Path(os.environ['PASSWORD_STORE_EXTENSIONS_DIR'])
+    else:
+        lib = Path.home() / '.password-store' / '.extensions'
+    if 'XDG_DATA_HOME' in os.environ:
+        share = Path(os.environ['XDG_DATA_HOME'])
+    else:
+        share = Path.home() / '.local' / 'share'
 
 setup(
-    name=about['__title__'],
-    version=about['__version__'],
-    author=about['__author__'],
-    author_email=about['__email__'],
-    description=about['__summary__'],
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    license=about['__license__'],
-    url=about['__uri__'],
-    packages=['pass_audit'],
-    install_requires=[
-        'requests',
-        'zxcvbn'
-    ],
-    python_requires='>=3.5',
-    zip_safe=True,
-    keywords=[
-        'password-store', 'password', 'pass', 'pass-extension',
-        'audit', 'password-audit', 'haveibeenpwned',
-    ],
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Console',
-        'Intended Audience :: End Users/Desktop',
-        'License :: OSI Approved :: GNU General'
-        ' Public License v3 or later (GPLv3+)',
-        'Operating System :: POSIX :: Linux',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Topic :: Security :: Cryptography',
+    data_files=[
+        (str(share / 'man' / 'man1'), [
+            'share/man/man1/pass-audit.1'
+        ]),
+        (str(share / 'bash-completion' / 'completions'), [
+            'share/bash-completion/completions/pass-audit'
+        ]),
+        (str(share / 'zsh' / 'site-functions'), [
+            'share/zsh/site-functions/_pass-audit'
+        ]),
+        (str(lib), ["audit.bash"]),
     ],
 )
