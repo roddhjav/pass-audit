@@ -77,7 +77,7 @@ decent anonymity; nevertheless, it is not an entirely secure solution.
 
 **Requirements**
 * `pass 1.7.0` or greater.
-* Python 3.4+
+* Python 3.6+
 * `python3-setuptools` to build and install it.
 * `python3-requests` (`apt install python3-requests` or `pip3 install requests`)
 * `python3-zxcvbn` (`pip3 install zxcvbn`)
@@ -110,12 +110,16 @@ pkg install py36-pass-audit
 make -C /usr/ports/security/py-pass-audit install clean
 ```
 
+**Using pip**
+```sh
+pip install pass-audit
+```
+
 **From git**
 ```sh
 git clone https://github.com/roddhjav/pass-audit/
 cd pass-audit
-make
-sudo make install  # For OSX: make install PREFIX=/usr/local
+python3 setup.py install
 ```
 
 **Stable version**
@@ -123,8 +127,7 @@ sudo make install  # For OSX: make install PREFIX=/usr/local
 wget https://github.com/roddhjav/pass-audit/releases/download/v1.1/pass-audit-1.1.tar.gz
 tar xzf pass-audit-1.1.tar.gz
 cd pass-audit-1.1
-make
-sudo make install  # For OSX: make install PREFIX=/usr/local
+python3 setup.py install
 ```
 
 [Releases][releases] and commits are signed using [`06A26D531D56C42D66805049C5469996F0DF68EC`][keys].
@@ -140,8 +143,10 @@ gpg --verify pass-audit-1.1.tar.gz.asc
 Alternatively, from git or a stable version you can do a local install with:
 ```sh
 cd pass-audit
-make local
+python3 setup.py install --user
 ```
+Remember to set `PASSWORD_STORE_ENABLE_EXTENSIONS` to `true` for the local
+extension to be enabled.
 
 
 ## Contribution
@@ -153,7 +158,7 @@ Feedback, contributors, pull requests are all very welcome.
 
 ## License
 
-    Copyright (C) 2018-2019  Alexandre PUJOL and Contributors
+    Copyright (C) 2018-2022  Alexandre PUJOL and Contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
