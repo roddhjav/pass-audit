@@ -103,23 +103,6 @@ def pass_read(msg, store, paths):
     return data
 
 
-def pass_audit(msg, data):
-    """Audit of the password store."""
-    audit = PassAudit(data, msg.verb)
-
-    msg.verbose("Checking for breached passwords")
-    breached = audit.password()
-
-    msg.verbose("Checking for weak passwords")
-    try:
-        weak = audit.zxcvbn()
-    except ImportError as error:
-        weak = []
-        msg.warning(f"python3-{error.name} not present, skipping check")
-
-    return breached, weak
-
-
 def zxcvbn_parse(details):
     """Nicely print the results from zxcvbn."""
     sequence = ''
@@ -129,11 +112,25 @@ def zxcvbn_parse(details):
     return res + f"This estimate is based on the sequence {sequence}"
 
 
-def report(msg, data, breached, weak):
-    """Print final report."""
+def main():
+    """pass-audit main function."""
+    msg, store, paths = setup()
+
+    data = pass_read(msg, store, paths)
+    audit = PassAudit(data, msg.verb)
+
+    msg.verbose("Checking for breached passwords")
+    breached = audit.password()
     for path, payload, count in breached:
         msg.warning(f"Password breached: {payload} from {path} has"
                     f" been breached {count} time(s).")
+
+    msg.verbose("Checking for weak passwords")
+    try:
+        weak = audit.zxcvbn()
+    except ImportError as error:
+        weak = []
+        msg.warning(f"python3-{error.name} not present, skipping check")
     for path, payload, details in weak:
         msg.warning(f"Weak password detected: {payload} from {path}"
                     f" might be weak. {zxcvbn_parse(details)}")
@@ -145,16 +142,6 @@ def report(msg, data, breached, weak):
         msg.error(f"{len(data)} passwords tested and {len(breached)} breached,"
                   f" {len(weak)} weak passwords found.")
         msg.message("You should update them with 'pass update'.")
-
-
-def main():
-    """pass-audit main function."""
-    msg, store, paths = setup()
-
-    data = pass_read(msg, store, paths)
-    breached, weak = pass_audit(msg, data)
-
-    report(msg, data, breached, weak)
 
 
 if __name__ == "__main__":
