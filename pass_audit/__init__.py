@@ -13,7 +13,7 @@ __title__ = 'pass-audit'
 __summary__ = 'A pass extension for auditing your password repository.'
 __uri__ = 'https://github.com/roddhjav/pass-audit'
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 __author__ = 'Alexandre Pujol'
 __email__ = 'alexandre@pujol.io'

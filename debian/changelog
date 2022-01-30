@@ -1,3 +1,9 @@
+pass-audit (1.2) unstable; urgency=medium
+
+  * Release pass-audit v1.2
+
+ -- Alexandre Pujol <alexandre@pujol.io>  Sun, 30 Jan 2022 14:55:34 +0000
+
 pass-audit (1.1-1) unstable; urgency=medium
 
   * Initial release
