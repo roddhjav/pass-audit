@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2017-2020 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2017-2022 Alexandre PUJOL <alexandre@pujol.io>.
 
 import os
 import sys

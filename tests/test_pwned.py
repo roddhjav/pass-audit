@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # pass-audit - test suite
-# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2022 Alexandre PUJOL <alexandre@pujol.io>.
 #
 
 from unittest import mock

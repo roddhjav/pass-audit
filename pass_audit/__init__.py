@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2022 Alexandre PUJOL <alexandre@pujol.io>.
 #
 """A pass extension for auditing your password repository."""
 
@@ -19,4 +19,4 @@ __author__ = 'Alexandre Pujol'
 __email__ = 'alexandre@pujol.io'
 
 __license__ = 'GPL3'
-__copyright__ = f"Copyright 2018-2020 {__author__}"
+__copyright__ = f"Copyright 2018-2022 {__author__}"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
-# Copyright (C) 2018-2020 Alexandre PUJOL <alexandre@pujol.io>.
+# Copyright (C) 2018-2022 Alexandre PUJOL <alexandre@pujol.io>.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
