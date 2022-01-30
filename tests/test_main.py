@@ -4,6 +4,7 @@
 #
 
 import os
+import shutil
 from unittest import mock
 
 from pass_audit.passwordstore import PasswordStore
@@ -80,6 +81,15 @@ class TestMain(tests.Test):
         """Testing: pass audit Password/pwned."""
         cmd = ['Password/pwned']
         self.main(cmd)
+
+    @mock.patch('requests.get', tests.mock_request)
+    def test_main_passwords_duplicate(self):
+        """Testing: pass audit for duplicates."""
+        shutil.copy(os.path.join(self.store.prefix, 'Password/good/1.gpg'),
+                    os.path.join(self.store.prefix, 'Password/good/10.gpg'))
+        cmd = ['Password/good']
+        self.main(cmd)
+        os.remove(os.path.join(self.store.prefix, 'Password/good/10.gpg'))
 
     @mock.patch('requests.get', tests.mock_request)
     def test_main_passwords_good(self):

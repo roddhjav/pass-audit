@@ -90,3 +90,21 @@ class PassAudit():
             if results['score'] <= 2:
                 weak.append((path, password, results))
         return weak
+
+    def duplicates(self):
+        """Check for duplicated passwords."""
+        seen = {}
+        for path, entry in self.data.items():
+            if entry.get('password', '') == '':
+                continue
+            password = entry['password']
+            if password in seen:
+                seen[password].append(path)
+            else:
+                seen[password] = [path]
+
+        duplicated = []
+        for paths in seen.values():
+            if len(paths) > 1:
+                duplicated.append(paths)
+        return duplicated

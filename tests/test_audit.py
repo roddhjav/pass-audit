@@ -55,11 +55,28 @@ class TestPassAudit(tests.Test):
         weak = audit.zxcvbn()
         self.assertTrue(len(weak) == 0)
 
+    def test_duplicates_yes(self):
+        """Testing: pass audit for duplicates password."""
+        data = tests.getdata('Password/notpwned/1')
+        data['Password/notpwned/copy'] = data['Password/notpwned/1']
+        audit = pass_audit.audit.PassAudit(data, True)
+        duplicated = audit.duplicates()
+        self.assertTrue(len(duplicated) == 1)
+
+    def test_duplicates_no(self):
+        """Testing: pass audit for not duplicated password."""
+        data = tests.getdata('Password/notpwned/')
+        audit = pass_audit.audit.PassAudit(data, True)
+        duplicated = audit.duplicates()
+        self.assertTrue(len(duplicated) == 0)
+
     def test_empty(self):
         """Testing: pass audit for empty password."""
         data = {'empty': {'password': ''}}
         audit = pass_audit.audit.PassAudit(data, self.msg)
         weak = audit.zxcvbn()
         breached = audit.password()
+        duplicated = audit.duplicates()
         self.assertTrue(len(weak) == 0)
         self.assertTrue(len(breached) == 0)
+        self.assertTrue(len(duplicated) == 0)

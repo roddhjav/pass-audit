@@ -33,8 +33,8 @@ class ArgParser(ArgumentParser):
     def __init__(self):
         description = """
  A pass extension for auditing your password repository. It supports safe
- breached password detection from haveibeenpwned.com using K-anonymity method
- and password strength estimaton using zxcvbn."""
+ breached password detection from haveibeenpwned.com using K-anonymity method,
+ duplicated passwords, and password strength estimaton using zxcvbn."""
         epilog = "More information may be found in the pass-audit(1) man page."
 
         super().__init__(prog='pass audit',
@@ -135,12 +135,18 @@ def main():
         msg.warning(f"Weak password detected: {payload} from {path}"
                     f" might be weak. {zxcvbn_parse(details)}")
 
-    if not breached and not weak:
-        msg.success(
-            f"None of the {len(data)} passwords tested are breached or weak.")
+    msg.verbose("Checking for duplicated passwords")
+    duplicated = audit.duplicates()
+    for paths in duplicated:
+        msg.warning(f"Duplicated passwords detected in {', '.join(paths)}")
+
+    if not breached and not weak and not duplicated:
+        msg.success(f"None of the {len(data)} passwords tested are "
+                    "breached, duplicated or weak.")
     else:
         msg.error(f"{len(data)} passwords tested and {len(breached)} breached,"
-                  f" {len(weak)} weak passwords found.")
+                  f" {len(weak)} weak passwords found,"
+                  f" {len(duplicated)} duplicated passwords found.")
         msg.message("You should update them with 'pass update'.")
 
 
