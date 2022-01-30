@@ -1,4 +1,4 @@
-.TH "pass-audit" 1 "December 2021" "pass-audit"
+.TH "pass-audit" 1 "January 2022" "pass-audit"
 
 .SH NAME
 \fBpass-audit\fP \- A \fIpass\fP(1) extension for auditing your password repository.
@@ -10,7 +10,8 @@
 .SH DESCRIPTION
 \fBpass audit\fP is a password store extension for auditing your password
 repository. It supports safe breached password detection from haveibeenpwned.com
-using K-anonymity method and password strength estimation by Dropbox' zxcvbn.
+using K-anonymity method duplicated passwords, and password strength estimaton
+using zxcvbn.
 
 
 .SH COMMAND
@@ -21,8 +22,8 @@ using K-anonymity method and password strength estimation by Dropbox' zxcvbn.
 .SH OPTIONS
 
 .TP
-\fB\-f\fB, \-\-filename\fR \fIfilename\fR
-Check only passwords from file with name \fIfilename\fR.gpg.
+\fB\-n\fB, \-\-name\fR \fIname\fR
+Check only passwords from file with name \fIname\fR.gpg.
 
 .TP
 \fB\-q\fB, \-\-quiet\fR

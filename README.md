@@ -21,24 +21,25 @@ using a [K-anonymity][Kanonymity] method. Using this method, you do not need to
 ## Usage
 
 ```
-usage: pass audit [-f|--filename filename] [-h] [-V] [-v | -q] [pass-names]
+usage: pass audit [-h] [-V] [-n NAME] [-v | -q] [pass-names]
 
  A pass extension for auditing your password repository. It supports safe
- breached password detection from haveibeenpwned.com using K-anonymity method
- and password strength estimaton using zxcvbn.
+ breached password detection from haveibeenpwned.com using K-anonymity method,
+ duplicated passwords, and password strength estimaton using zxcvbn.
 
 positional arguments:
-  pass-names     Path(s) to audit in the password store, If empty audit the full store.
+  pass-names            Path(s) to audit in the password store, If empty audit the full store.
 
-optional arguments:
-  -f, --filename filename Check only passwords with this filename.gpg
-  -h, --help     show this help message and exit
-  -V, --version  Show the program version and exit.
-  -v, --verbose  Set verbosity level, can be used more than once.
-  -q, --quiet    Be quiet.
+options:
+  -h, --help            show this help message and exit
+  -V, --version         Show the program version and exit.
+  -n NAME, --name NAME  Check only passwords with this filename
+  -v, --verbose         Set verbosity level, can be used more than once.
+  -q, --quiet           Be quiet.
 
 More information may be found in the pass-audit(1) man page.
 ```
+
 See `man pass-audit` for more information.
 
 
