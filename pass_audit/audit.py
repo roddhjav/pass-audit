@@ -40,9 +40,9 @@ class PwnedAPI():
 class PassAudit():
     """Pass audit main class."""
 
-    def __init__(self, data, msg):
+    def __init__(self, data, verbose):
         self.data = data
-        self.msg = msg
+        self.verbose = verbose
 
     def password(self):
         """K-anonimity password breach detection on haveibeenpwned.com."""
@@ -51,7 +51,8 @@ class PassAudit():
         api = PwnedAPI()
         buckets = {}
         for path, entry in self.data.items():
-            self.msg.verbose(f"Getting the prefix of {path}")
+            if self.verbose:
+                print(f"Getting the prefix of {path}")
             if entry.get('password', '') == '':
                 continue
             password = entry['password'].encode("utf8")
@@ -73,12 +74,12 @@ class PassAudit():
     def zxcvbn(self):
         """Password strength estimaton usuing Dropbox' zxcvbn."""
         if not ZXCVBN:
-            self.msg.warning("python3-zxcvbn not present, skipping check")
-            return []
+            raise ImportError(name='zxcvbn')
 
         weak = []
         for path, entry in self.data.items():
-            self.msg.verbose(f"Checking {path}")
+            if self.verbose:
+                print(f"Checking {path}")
             if entry.get('password', '') == '':
                 continue
             password = entry['password']

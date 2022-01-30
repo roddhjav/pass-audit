@@ -105,13 +105,17 @@ def pass_read(msg, store, paths):
 
 def pass_audit(msg, data):
     """Audit of the password store."""
-    audit = PassAudit(data, msg)
+    audit = PassAudit(data, msg.verb)
 
     msg.verbose("Checking for breached passwords")
     breached = audit.password()
 
     msg.verbose("Checking for weak passwords")
-    weak = audit.zxcvbn()
+    try:
+        weak = audit.zxcvbn()
+    except ImportError as error:
+        weak = []
+        msg.warning(f"python3-{error.name} not present, skipping check")
 
     return breached, weak
 
