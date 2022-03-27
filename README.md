@@ -63,18 +63,36 @@ pass audit pwnedpasswords/
 
 ## Security consideration
 
+**K-anonymity**
+
 This program uses K-anonymity to retrieve the knowledge of breached passwords
 from HIBP server. K-anonymity applied to breached password check on an untrusted
 remote server is a recent cryptographic approach. It means only the first five
 characters of the SHA1 hash of your password is sent to the server. It offers
 decent anonymity; nevertheless, it is not an entirely secure solution.
 
-**More reading:**
+More reading:
 * https://www.troyhunt.com/ive-just-launched-pwned-passwords-version-2/
 * https://blog.cloudflare.com/validating-leaked-passwords-with-k-anonymity/
 
+**Mandatory Access Control (MAC)**
 
-## Installation
+AppArmor profiles for `pass` and `pass-audit` are available in 
+[`apparmor.d`][apparmor.d]. If your distribution support AppArmor, you can
+clone the [apparmor.d] and run: `sudo ./pick pass pass-import` to only install
+these apparmor security profiles.
+
+**Network**
+
+pass-audit only needs to etablish network connection to connect to the
+[haveibeenpwned.com][HIBP] server.
+
+**Password Update**
+
+You might also want to update the passwords imported using [`pass-update`][update].
+
+
+## Installation [<img src="https://repology.org/badge/vertical-allrepos/pass-audit.svg" align="right">][repology-link]
 
 **Requirements**
 * `pass 1.7.0` or greater.
@@ -185,9 +203,12 @@ Feedback, contributors, pull requests are all very welcome.
 [quality-link]: https://www.codacy.com/app/roddhjav/pass-audit
 [release]: https://img.shields.io/github/release/roddhjav/pass-audit.svg?maxAge=600&style=flat-square
 [release-link]: https://github.com/roddhjav/pass-audit/releases/latest
+[repology-link]: https://repology.org/project/pass-audit/versions
 
 [pass]: https://www.passwordstore.org/
+[apparmor.d]: https://github.com/roddhjav/apparmor.d
 [keys]: https://pujol.io/keys
+[update]: https://github.com/roddhjav/pass-update
 [aur]: https://aur.archlinux.org/packages/pass-audit
 [releases]: https://github.com/roddhjav/pass-audit/releases
 [pass]: https://www.passwordstore.org/
