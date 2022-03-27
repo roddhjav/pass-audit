@@ -34,6 +34,9 @@ lint:
 security:
 	@bandit -r pass_audit tests setup.py
 
+docs:
+	@pandoc -t man -s -o share/man/man1/pass-audit.1 share/man/man1/pass-audit.md
+
 clean:
 	@rm -rf .coverage .mypy_cache .pybuild .ropeproject build config.json \
 		debian/.debhelper debian/debhelper* debian/pass-extension-audit* \
