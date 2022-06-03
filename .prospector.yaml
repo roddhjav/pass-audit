@@ -11,7 +11,7 @@ pylint:
     - too-few-public-methods
     - unspecified-encoding
 
-pep257:
+pydocstyle:
   disable:
     - D100
     - D107
