@@ -34,7 +34,7 @@ class ArgParser(ArgumentParser):
         description = """
  A pass extension for auditing your password repository. It supports safe
  breached password detection from haveibeenpwned.com using K-anonymity method,
- duplicated passwords, and password strength estimaton using zxcvbn."""
+ duplicated passwords, and password strength estimation using zxcvbn."""
         epilog = "More information may be found in the pass-audit(1) man page."
 
         super().__init__(prog='pass audit',
@@ -65,7 +65,7 @@ class ArgParser(ArgumentParser):
 
 
 def setup():
-    """Read progam arguments & sanity checks."""
+    """Read program arguments & sanity checks."""
     parser = ArgParser()
     arg = parser.parse_args(sys.argv)
     msg = Msg(arg.verbose, arg.quiet)
@@ -99,7 +99,7 @@ def pass_read(msg, store, paths):
             data[path] = store.show(path)
         except PasswordStoreError as error:
             msg.warning(
-                f"Imposible to read {path} from the password store: {error}")
+                f"Impossible to read {path} from the password store: {error}")
     return data
 
 

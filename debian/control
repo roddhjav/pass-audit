@@ -19,7 +19,7 @@ Depends:
   pass (>= 1.7.0),
   python3 (>= 3.6),
   python3-requests,
-Description: A passwords store extension for auditing a password repository.
+Description: A password store extension for auditing a password repository.
  Passwords will be checked against the Python implementation of Dropbox' zxcvbn
  algorithm and Troy Hunt's Have I Been Pwned Service. It supports safe breached
  password detection from haveibeenpwned.com using a K-anonymity method. Using

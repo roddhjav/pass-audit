@@ -25,7 +25,7 @@ usage: pass audit [-h] [-V] [-n NAME] [-v | -q] [pass-names]
 
  A pass extension for auditing your password repository. It supports safe
  breached password detection from haveibeenpwned.com using K-anonymity method,
- duplicated passwords, and password strength estimaton using zxcvbn.
+ duplicated passwords, and password strength estimation using zxcvbn.
 
 positional arguments:
   pass-names            Path(s) to audit in the password store, If empty audit the full store.
@@ -80,11 +80,11 @@ More reading:
 AppArmor profiles for `pass` and `pass-audit` are available in 
 [`apparmor.d`][apparmor.d]. If your distribution support AppArmor, you can
 clone the [apparmor.d] and run: `sudo ./pick pass pass-import` to only install
-these apparmor security profiles.
+these AppArmor security profiles.
 
 **Network**
 
-pass-audit only needs to etablish network connection to connect to the
+pass-audit only needs to establish network connection to connect to the
 [haveibeenpwned.com][HIBP] server.
 
 **Password Update**

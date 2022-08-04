@@ -89,11 +89,11 @@ If your distribution support AppArmor, you can clone the repository and run:
 sudo ./pick pass pass-import
 ```
 
-to only install these apparmor security profiles.
+to only install these AppArmor security profiles.
 
 ## Network
 
-pass-audit only needs to etablish network connection to connect to the
+pass-audit only needs to establish network connection to connect to the
 *haveibeenpwned.com* server.
 
 ## Password Update
