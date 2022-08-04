@@ -52,7 +52,7 @@ class TestPassAudit(tests.Test):
         self.assertTrue(len(weak) == 0)
 
     def test_duplicates_yes(self):
-        """Testing: pass audit for duplicates password."""
+        """Testing: pass audit for duplicated passwords."""
         data = tests.getdata('Password/notpwned/1')
         data['Password/notpwned/copy'] = data['Password/notpwned/1']
         audit = pass_audit.audit.PassAudit(data, True)
@@ -60,7 +60,7 @@ class TestPassAudit(tests.Test):
         self.assertTrue(len(duplicated) == 1)
 
     def test_duplicates_no(self):
-        """Testing: pass audit for not duplicated password."""
+        """Testing: pass audit for not duplicated passwords."""
         data = tests.getdata('Password/notpwned/')
         audit = pass_audit.audit.PassAudit(data, True)
         duplicated = audit.duplicates()

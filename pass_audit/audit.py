@@ -23,7 +23,7 @@ class PwnedAPI():
         self.headers = {'user-agent': f"pass-audit/{__version__}"}
 
     def password_range(self, prefix):
-        """Query the haveibeenpwned api to retrieve the bucket ``prefix``."""
+        """Query the haveibeenpwned API to retrieve the bucket ``prefix``."""
         url = f"https://api.pwnedpasswords.com/range/{prefix}"
         res = requests.get(url, headers=self.headers, verify=True)
         res.raise_for_status()
@@ -45,7 +45,7 @@ class PassAudit():
         self.verbose = verbose
 
     def password(self):
-        """K-anonimity password breach detection on haveibeenpwned.com."""
+        """K-anonymity password breach detection on haveibeenpwned.com."""
         # Generate the list of hashes and prefixes to query.
         data = []
         api = PwnedAPI()
@@ -72,7 +72,7 @@ class PassAudit():
         return breached
 
     def zxcvbn(self):
-        """Password strength estimaton usuing Dropbox' zxcvbn."""
+        """Password strength estimation using Dropbox' zxcvbn."""
         if not ZXCVBN:
             raise ImportError(name='zxcvbn')
 
