@@ -110,7 +110,7 @@ yay -S pass-audit  # or your preferred AUR install method
 
 **Debian/Ubuntu**
 
-`pass-audit` is available under my own debian repository with the package name
+`pass-audit` is available under [my own debian repository][repo] with the package name
 `pass-extension-audit`. Both the repository and the package are signed with
 my GPG key: [`06A26D531D56C42D66805049C5469996F0DF68EC`][keys].
 ```sh
@@ -208,6 +208,7 @@ Feedback, contributors, pull requests are all very welcome.
 [pass]: https://www.passwordstore.org/
 [apparmor.d]: https://github.com/roddhjav/apparmor.d
 [keys]: https://pujol.io/keys
+[repo]: https://pkg.pujol.io
 [update]: https://github.com/roddhjav/pass-update
 [aur]: https://aur.archlinux.org/packages/pass-audit
 [releases]: https://github.com/roddhjav/pass-audit/releases
