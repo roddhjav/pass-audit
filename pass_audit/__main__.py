@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*
 # pass audit - Password Store Extension (https://www.passwordstore.org/)
 # Copyright (C) 2018-2022 Alexandre PUJOL <alexandre@pujol.io>.
