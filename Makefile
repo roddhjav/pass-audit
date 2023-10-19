@@ -1,15 +1,44 @@
+PREFIX ?= /usr
 DESTDIR ?= /
+LIBDIR ?= $(PREFIX)/lib
+SHAREDIR = $(PREFIX)/share
+MANDIR ?= $(SHAREDIR)/man
+PYTHON ?= yes
+
+EXTENSION_DIR ?= $(LIBDIR)/password-store/extensions
+
+BASHCOMPDIR ?= $(SHAREDIR)/bash-completion/completions
+ZSHCOMPDIR ?= $(SHAREDIR)/zsh/site-functions
 
 all:
 	@python3 setup.py build
 	@echo "pass-audit was built successfully. You can now install it with \"make install\""
 
-install:
-	@python3 setup.py install --root="$(DESTDIR)" --optimize=1 --skip-build
+base_install:
+	@install -vd "$(DESTDIR)$(EXTENSION_DIR)/" "$(DESTDIR)$(MANDIR)/man1" \
+		     "$(DESTDIR)$(BASHCOMPDIR)" "$(DESTDIR)$(ZSHCOMPDIR)"
+	@install -vm 0755 audit.bash "$(DESTDIR)$(EXTENSION_DIR)/audit.bash"
+	@install -vm 0644 share/man/man1/pass-audit.1 "$(DESTDIR)$(MANDIR)/man1/"
+	@install -vm 0644 share/bash-completion/completions/pass-audit "$(DESTDIR)$(BASHCOMPDIR)/"
+	@install -vm 0644 share/zsh/site-functions/_pass-audit "$(DESTDIR)$(ZSHCOMPDIR)/"
+
+install: base_install
+	@[ "$(PYTHON)" = "yes" ] || exit 0; python3 setup.py install --root="$(DESTDIR)" --optimize=1 --skip-build
 	@echo "pass-audit is installed successfully"
 
-local:
-	@python3 setup.py install --user --optimize=1
+uninstall:
+	@rm -vrf \
+		"$(DESTDIR)$(EXTENSION_DIR)/audit.bash" \
+		"$(DESTDIR)$(MANDIR)/man1/pass-audit.1" \
+		"$(DESTDIR)$(ZSHCOMPDIR)/_pass-audit" \
+		"$(DESTDIR)$(BASHCOMPDIR)/pass-audit"
+
+XDG_DATA_HOME ?= $(HOME)/.local/share
+PASSWORD_STORE_EXTENSIONS_DIR ?= $(HOME)/.password-store/.extensions
+local: EXTENSION_DIR = $(PASSWORD_STORE_EXTENSIONS_DIR)
+local: SHAREDIR = $(XDG_DATA_HOME)
+local: base_install
+	@[ "$(PYTHON)" = "yes" ] || exit 0; python3 setup.py install --user --optimize=1
 	@echo "pass-audit is locally installed successfully."
 	@echo "Remember to set PASSWORD_STORE_ENABLE_EXTENSIONS to 'true' for the extension to be enabled."
 
