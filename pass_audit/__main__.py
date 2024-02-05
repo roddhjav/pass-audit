@@ -81,9 +81,19 @@ def setup():
     if not store.isvalid():
         msg.die('invalid user ID, password access aborted.')
 
-    paths = store.list(arg.paths, arg.name)
-    if not paths:
+    paths_raw = store.list(arg.paths, arg.name)
+    paths = []
+
+    if not paths_raw:
         msg.die(f"{arg.paths} is not in the password store.")
+
+    with open(os.path.join(store.prefix, ".pass-audit-ignore"), "r") as ignore:
+        ignore_paths = ignore.read()
+
+        for ignore_path in ignore_paths.split("\n"):
+            for path in paths_raw:
+                if not path.startswith(ignore_path):
+                    paths.append(path)
 
     return msg, store, paths
 
