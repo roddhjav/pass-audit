@@ -90,10 +90,23 @@ def setup():
     with open(os.path.join(store.prefix, ".pass-audit-ignore"), "r") as ignore:
         ignore_paths = ignore.read()
 
+    for path in paths_raw:
+        add_path = False
         for ignore_path in ignore_paths.split("\n"):
-            for path in paths_raw:
-                if not path.startswith(ignore_path):
-                    paths.append(path)
+            if ignore_path == "":
+                continue
+
+            if ignore_path.startswith("#"):
+                continue
+
+            if not path.startswith(ignore_path):
+                add_path = True
+            else:
+                add_path = False
+                break
+
+        if add_path:
+            paths.append(path)
 
     return msg, store, paths
 
