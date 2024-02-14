@@ -18,6 +18,8 @@
 
 import os
 import sys
+import re
+
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from pass_audit import __version__
@@ -81,9 +83,42 @@ def setup():
     if not store.isvalid():
         msg.die('invalid user ID, password access aborted.')
 
-    paths = store.list(arg.paths, arg.name)
-    if not paths:
+    paths_raw = store.list(arg.paths, arg.name)
+    paths = []
+
+    if not paths_raw:
         msg.die(f"{arg.paths} is not in the password store.")
+
+    ignore_paths_list = []
+    audit_ignore_path = os.path.join(store.prefix, ".pass-audit-ignore")
+
+    if not os.path.isfile(audit_ignore_path):
+        open(audit_ignore_path, "w").close()
+
+    with open(audit_ignore_path, "r") as f:
+        ignore_paths = f.read()
+
+    if len(ignore_paths) > 0:
+        ignore_paths_list = ignore_paths.split("\n")
+
+    for path in paths_raw:
+        add_path = False
+
+        for ignore_path in ignore_paths_list:
+            if ignore_path == "":
+                continue
+
+            if ignore_path.startswith("#"):
+                continue
+
+            if not re.search(ignore_path, path):
+                add_path = True
+            else:
+                add_path = False
+                break
+
+        if add_path or len(ignore_paths_list) <= 0:
+            paths.append(path)
 
     return msg, store, paths
 

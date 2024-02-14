@@ -13,6 +13,7 @@ import tests
 class TestPassAudit(tests.Test):
     """Test the PassAudit class."""
     passwords_nb = 7
+    passwords_unignored = 4
 
     @mock.patch('requests.get', tests.mock_request)
     def test_password_notpwned(self):
@@ -35,6 +36,14 @@ class TestPassAudit(tests.Test):
             self.assertTrue(data[path]['password'] == password)
             ref_index = int(path[-1:]) - 1
             self.assertTrue(ref_counts[ref_index] == count)
+
+    def test_password_ignore(self):
+        """Testing: if .pass-audit-ignore works"""
+        data = tests.getdata('Password/ignore')
+        audit = pass_audit.audit.PassAudit(data, True)
+        passwords = audit.password()
+
+        self.assertTrue(len(passwords) == self.passwords_unignored)
 
     def test_zxcvbn_weak(self):
         """Testing: pass audit for weak password with zxcvbn."""
