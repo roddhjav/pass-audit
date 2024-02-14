@@ -89,12 +89,20 @@ def setup():
     if not paths_raw:
         msg.die(f"{arg.paths} is not in the password store.")
 
-    with open(os.path.join(store.prefix, ".pass-audit-ignore"), "a+") as f:
+    ignore_paths_list = []
+    audit_ignore_path = os.path.join(store.prefix, ".pass-audit-ignore")
+
+    if not os.path.isfile(audit_ignore_path):
+        open(audit_ignore_path, "w").close()
+
+    with open(audit_ignore_path, "r") as f:
         ignore_paths = f.read()
+
+    if len(ignore_paths) > 0:
+        ignore_paths_list = ignore_paths.split("\n")
 
     for path in paths_raw:
         add_path = False
-        ignore_paths_list = ignore_paths.split("\n")
 
         for ignore_path in ignore_paths_list:
             if ignore_path == "":
@@ -109,10 +117,7 @@ def setup():
                 add_path = False
                 break
 
-        if ignore_paths_list[0] == "":
-            add_path = True
-
-        if add_path:
+        if add_path or len(ignore_paths_list) <= 0:
             paths.append(path)
 
     return msg, store, paths
