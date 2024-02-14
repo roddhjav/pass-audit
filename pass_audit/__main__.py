@@ -18,6 +18,8 @@
 
 import os
 import sys
+import re
+
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from pass_audit import __version__
@@ -87,23 +89,28 @@ def setup():
     if not paths_raw:
         msg.die(f"{arg.paths} is not in the password store.")
 
-    with open(os.path.join(store.prefix, ".pass-audit-ignore"), "r") as ignore:
-        ignore_paths = ignore.read()
+    with open(os.path.join(store.prefix, ".pass-audit-ignore"), "r+") as f:
+        ignore_paths = f.read()
 
     for path in paths_raw:
         add_path = False
-        for ignore_path in ignore_paths.split("\n"):
+        ignore_paths_list = ignore_paths.split("\n")
+
+        for ignore_path in ignore_paths_list:
             if ignore_path == "":
                 continue
 
             if ignore_path.startswith("#"):
                 continue
 
-            if not path.startswith(ignore_path):
+            if not re.search(ignore_path, path):
                 add_path = True
             else:
                 add_path = False
                 break
+
+        if len(ignore_paths_list) == 0:
+            add_path = True
 
         if add_path:
             paths.append(path)
