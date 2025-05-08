@@ -86,9 +86,13 @@ class PassAudit():
             user_input = list(entry.values()) + path.split(os.sep)
             if password in user_input:
                 user_input.remove(password)
-            results = zxcvbn(password, user_inputs=user_input)
-            if results['score'] <= 2:
-                weak.append((path, password, results))
+            try:
+                results = zxcvbn(password, user_inputs=user_input)
+            except ValueError:
+                pass
+            else:
+                if results['score'] <= 2:
+                    weak.append((path, password, results))
         return weak
 
     def duplicates(self):
